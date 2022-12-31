@@ -9,6 +9,12 @@ public class PlayerScript : MonoBehaviour
     private float moveSpeed = 1;
     [SerializeField]
     private float jumpVelocity = 1;
+    [SerializeField]
+    private float maxSpeed = 1;
+    [SerializeField]
+    private float diveSpeed = 1;
+    [SerializeField]
+    private float dashSpeed = 1;
 
     public Rigidbody2D rigidBody2D;
 
@@ -28,6 +34,8 @@ public class PlayerScript : MonoBehaviour
     [SerializeField]
     private InputAction dashControls;
 
+    public bool canDash = true;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,7 +45,30 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        rigidBody2D.velocity = new Vector2(movementControls.ReadValue<float>() * moveSpeed, rigidBody2D.velocity.y);
+        if (jumpAndDiveControls.ReadValue<float>() == -1)
+        {
+            if (!IsOnGround())
+            {
+                rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, -diveSpeed);
+            }
+        }
+
+        if (!canDash)
+        {
+            if (IsOnGround())
+            {
+                canDash = true;
+            }
+        }
+        
+        if (!IsOnGround())
+        {
+            if (dashControls.ReadValue<float>() == 1)
+            rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x + movementControls.ReadValue<float>() * dashSpeed, rigidBody2D.velocity.y);
+        }
+
+        
+        rigidBody2D.velocity = new Vector2(Mathf.Clamp(rigidBody2D.velocity.x + movementControls.ReadValue<float>() * moveSpeed * Time.deltaTime, -maxSpeed, maxSpeed), rigidBody2D.velocity.y);
 
     }
 
@@ -63,6 +94,26 @@ public class PlayerScript : MonoBehaviour
             {
                 rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, jumpVelocity);
             }
+            if (collision.collider.IsTouching(rightEdgeCollider))
+            {
+                rigidBody2D.velocity = new Vector2(-jumpVelocity, jumpVelocity);
+            }
+            if (collision.collider.IsTouching(leftEdgeCollider))
+            {
+                rigidBody2D.velocity = new Vector2(jumpVelocity, jumpVelocity);
+            }
         }
+    }
+
+    public bool IsOnGround()
+    {
+        GameObject[] groundObjects = GameObject.FindGameObjectsWithTag("Ground");
+        foreach (GameObject groundObject in groundObjects)
+        {
+            if (bottomEdgeCollider.IsTouching(groundObject.GetComponent<Collider2D>())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
