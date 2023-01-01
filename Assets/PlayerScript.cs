@@ -42,9 +42,29 @@ public class PlayerScript : MonoBehaviour
     [SerializeField]
     private GameObject lastCheckpoint;
 
+    private PlayerControls controls;
+
 
     private bool canDash = true;
     private bool shouldClampHoriznontalSpeed = true;
+
+    private float horizontalMovement;
+    private float jumpAndDive;
+    private float dash;
+
+    private void Awake()
+    {
+        controls = new PlayerControls();
+
+        controls.Player.Move.performed += ctx => horizontalMovement = ctx.ReadValue<float>();
+        controls.Player.Move.canceled += ctx => horizontalMovement = 0;
+
+        controls.Player.JumpAndDive.performed += ctx => jumpAndDive = ctx.ReadValue<float>();
+        controls.Player.JumpAndDive.canceled += ctx => jumpAndDive = 0;
+
+        controls.Player.Dash.performed += ctx => dash = ctx.ReadValue<float>();
+        controls.Player.Dash.canceled += ctx => dash = 0;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -55,7 +75,7 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (jumpAndDiveControls.ReadValue<float>() == -1)
+        if (jumpAndDive < 0)
         {
             if (!IsOnGround())
             {
@@ -84,8 +104,8 @@ public class PlayerScript : MonoBehaviour
         if (!IsOnGround())
         {
             if (canDash) {
-                if (dashControls.ReadValue<float>() != 0) {
-                    rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x + dashControls.ReadValue<float>() * dashSpeed, verticallDashSpeed);
+                if (dash > 0) {
+                    rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x + horizontalMovement * dashSpeed, verticallDashSpeed);
                     canDash = false;
                     shouldClampHoriznontalSpeed = false;
                  }
@@ -94,7 +114,7 @@ public class PlayerScript : MonoBehaviour
 
       
        
-        rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x + movementControls.ReadValue<float>() * moveSpeed * Time.deltaTime, rigidBody2D.velocity.y);
+        rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x + horizontalMovement * moveSpeed * Time.deltaTime, rigidBody2D.velocity.y);
         if (shouldClampHoriznontalSpeed)
         {
             rigidBody2D.velocity = new Vector2(Mathf.Clamp(rigidBody2D.velocity.x, -maxSpeed, maxSpeed), rigidBody2D.velocity.y);
@@ -107,6 +127,7 @@ public class PlayerScript : MonoBehaviour
         jumpAndDiveControls.Enable();
         dashControls.Enable();
         respawnControls.Enable();
+        controls.Player.Enable();
     }
 
     private void OnDisable()
@@ -115,11 +136,12 @@ public class PlayerScript : MonoBehaviour
         jumpAndDiveControls.Disable();
         dashControls.Disable();
         respawnControls.Disable();
+        controls.Player.Disable();
     }
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if (jumpAndDiveControls.ReadValue<float>() == 1)
+        if (jumpAndDive > 0)
         {
             if (collision.collider.IsTouching(bottomEdgeCollider))
             {
