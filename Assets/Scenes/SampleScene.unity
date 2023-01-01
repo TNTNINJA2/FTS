@@ -357,6 +357,24 @@ MonoBehaviour:
       m_Action: Dash Controls
       m_Flags: 8
     m_Flags: 0
+  respawnControls:
+    m_Name: Respawn Controls
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 2bfbb9f0-83df-41c6-bebe-260b4d751ccd
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 45fe8209-b4d1-4918-8390-e1cae379784b
+      m_Path: <Keyboard>/l
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Respawn Controls
+      m_Flags: 0
+    m_Flags: 0
+  lastCheckpoint: {fileID: 0}
 --- !u!61 &5065819
 BoxCollider2D:
   m_ObjectHideFlags: 0
