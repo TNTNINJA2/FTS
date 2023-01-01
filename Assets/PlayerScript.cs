@@ -15,6 +15,8 @@ public class PlayerScript : MonoBehaviour
     private float diveSpeed = 1;
     [SerializeField]
     private float dashSpeed = 1;
+    [SerializeField]
+    private float verticallDashSpeed = 1;
 
     public Rigidbody2D rigidBody2D;
 
@@ -34,7 +36,9 @@ public class PlayerScript : MonoBehaviour
     [SerializeField]
     private InputAction dashControls;
 
-    public bool canDash = true;
+
+    private bool canDash = true;
+    private bool shouldClampHoriznontalSpeed = true;
 
     // Start is called before the first frame update
     void Start()
@@ -49,7 +53,7 @@ public class PlayerScript : MonoBehaviour
         {
             if (!IsOnGround())
             {
-                rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, -diveSpeed);
+                rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, rigidBody2D.velocity.y - diveSpeed);
             }
         }
 
@@ -58,18 +62,28 @@ public class PlayerScript : MonoBehaviour
             if (IsOnGround())
             {
                 canDash = true;
+                shouldClampHoriznontalSpeed = true;
+                Debug.Log("Reset canDash to true");
             }
         }
-        
+
         if (!IsOnGround())
         {
-            if (dashControls.ReadValue<float>() == 1)
-            rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x + movementControls.ReadValue<float>() * dashSpeed, rigidBody2D.velocity.y);
+            if (canDash) {
+                if (dashControls.ReadValue<float>() != 0) {
+                    rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x + dashControls.ReadValue<float>() * dashSpeed, verticallDashSpeed);
+                    canDash = false;
+                    shouldClampHoriznontalSpeed = false;
+                 }
+            }
         }
 
-        
-        rigidBody2D.velocity = new Vector2(Mathf.Clamp(rigidBody2D.velocity.x + movementControls.ReadValue<float>() * moveSpeed * Time.deltaTime, -maxSpeed, maxSpeed), rigidBody2D.velocity.y);
-
+       
+        rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x + movementControls.ReadValue<float>() * moveSpeed * Time.deltaTime, rigidBody2D.velocity.y);
+        if (shouldClampHoriznontalSpeed)
+        {
+            rigidBody2D.velocity = new Vector2(Mathf.Clamp(rigidBody2D.velocity.x, -maxSpeed, maxSpeed), rigidBody2D.velocity.y);
+        }
     }
 
     private void OnEnable()

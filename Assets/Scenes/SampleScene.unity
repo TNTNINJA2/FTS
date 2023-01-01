@@ -132,14 +132,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5065815}
-  - component: {fileID: 5065817}
+  - component: {fileID: 5065818}
   - component: {fileID: 5065816}
   - component: {fileID: 5065819}
-  - component: {fileID: 5065818}
   - component: {fileID: 5065823}
   - component: {fileID: 5065822}
   - component: {fileID: 5065821}
   - component: {fileID: 5065820}
+  - component: {fileID: 5065817}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -250,8 +250,9 @@ MonoBehaviour:
   moveSpeed: 12
   jumpVelocity: 5
   maxSpeed: 5
-  diveSpeed: 10
-  dashSpeed: 1
+  diveSpeed: 5
+  dashSpeed: 5
+  verticallDashSpeed: 1
   rigidBody2D: {fileID: 5065816}
   bottomEdgeCollider: {fileID: 5065823}
   rightEdgeCollider: {fileID: 5065820}
@@ -329,18 +330,33 @@ MonoBehaviour:
     m_ExpectedControlType: 
     m_Id: 344c6abc-4a89-4f64-b208-6d2914fa1579
     m_Processors: 
-    m_Interactions: 
+    m_Interactions: MultiTap
     m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 11a785e8-74a0-4c4f-9bb8-b02d21740ec3
-      m_Path: <Keyboard>/shift
+    - m_Name: 1D Axis
+      m_Id: 8fb75f4f-ee58-4bbd-ad68-0335d2f6daaa
+      m_Path: 1DAxis
       m_Interactions: 
       m_Processors: 
       m_Groups: 
       m_Action: Dash Controls
-      m_Flags: 0
+      m_Flags: 4
+    - m_Name: negative
+      m_Id: 7af2f04b-05ca-4b50-921f-03a8c71dff59
+      m_Path: <Keyboard>/a
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Dash Controls
+      m_Flags: 8
+    - m_Name: positive
+      m_Id: 7531fb24-af68-49cb-92ea-7787318da6d1
+      m_Path: <Keyboard>/d
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Dash Controls
+      m_Flags: 8
     m_Flags: 0
-  canDash: 1
 --- !u!61 &5065819
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -381,7 +397,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0.075, y: 0}
-  m_Size: {x: 0.01, y: 0.12}
+  m_Size: {x: 0.01, y: 0.1}
   m_Direction: 0
 --- !u!70 &5065821
 CapsuleCollider2D:
@@ -397,7 +413,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: -0.075, y: 0}
-  m_Size: {x: 0.01, y: 0.12}
+  m_Size: {x: 0.01, y: 0.1}
   m_Direction: 0
 --- !u!70 &5065822
 CapsuleCollider2D:
@@ -413,7 +429,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0.075}
-  m_Size: {x: 0.12, y: 0.01}
+  m_Size: {x: 0.1, y: 0.01}
   m_Direction: 1
 --- !u!70 &5065823
 CapsuleCollider2D:
@@ -429,7 +445,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: -0.075}
-  m_Size: {x: 0.12, y: 0.01}
+  m_Size: {x: 0.1, y: 0.01}
   m_Direction: 1
 --- !u!1 &246371132
 GameObject:
