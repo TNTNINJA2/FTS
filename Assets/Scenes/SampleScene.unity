@@ -251,7 +251,7 @@ MonoBehaviour:
   jumpVelocity: 5
   maxSpeed: 5
   diveSpeed: 5
-  dashSpeed: 5
+  dashSpeed: 2
   verticallDashSpeed: 1
   rigidBody2D: {fileID: 5065816}
   bottomEdgeCollider: {fileID: 5065823}
