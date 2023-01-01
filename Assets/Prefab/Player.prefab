@@ -51,11 +51,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 805c6fd4a5061ac4a81366a1b479a342, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 6
-  jumpVelocity: 2.5
-  maxSpeed: 2.5
-  diveSpeed: 2.5
-  dashSpeed: 1
+  moveSpeed: 8
+  jumpVelocity: 3
+  maxSpeed: 4
+  diveSpeed: 3.5
+  dashSpeed: 1.8
   verticallDashSpeed: 1
   rigidBody2D: {fileID: 1924209042572791636}
   bottomEdgeCollider: {fileID: 1924209042572791635}
