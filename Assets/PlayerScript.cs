@@ -139,6 +139,10 @@ public class PlayerScript : MonoBehaviour
         {
             lastCheckpoint = collision.collider.gameObject; 
         }
+        if (collision.collider.gameObject.tag.Equals("Hazard"))
+        {
+            returnToCheckpoint();
+        }
     }
 
     public bool IsOnGround()
