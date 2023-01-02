@@ -6,47 +6,33 @@ using UnityEngine.InputSystem;
 
 public class PlayerScript : MonoBehaviour
 {
-    [SerializeField]
-    private float moveSpeed = 1;
-    [SerializeField]
-    private float jumpVelocity = 1;
-    [SerializeField]
-    private float maxSpeed = 1;
-    [SerializeField]
-    private float diveSpeed = 1;
-    [SerializeField]
-    private float dashSpeed = 1;
-    [SerializeField]
-    private float verticallDashSpeed = 1;
+    [SerializeField] private float groundedAcceleration = 1;
+    [SerializeField] private float aerialAcceleration = 1;
+    [SerializeField] private float groundedFriction = 1;
+    [SerializeField] private float groundedPseudoDrag = 1;
+    [SerializeField] private float aerialDrag = 1;
+    [SerializeField] private float jumpVelocity = 1;
+    [SerializeField] private float maxSpeed = 1;
+    [SerializeField] private float maxFallSpeed = 1;
+    [SerializeField] private float diveSpeed = 1;
+    [SerializeField] private float dashSpeed = 1;
+    [SerializeField] private float verticalDashSpeed = 1;
+    [SerializeField] private float gravity = 1;
 
-    public Rigidbody2D rigidBody2D;
 
-    [SerializeField]
-    private Collider2D bottomEdgeCollider;
-    [SerializeField]
-    private Collider2D rightEdgeCollider;
-    [SerializeField]
-    private Collider2D leftEdgeCollider;
-    [SerializeField]
-    private Collider2D topEdgeCollider;
+    [SerializeField] private Rigidbody2D rigidBody2D;
+    [SerializeField] private BoxCollider2D collisionBox;
 
-    [SerializeField]
-    private InputAction movementControls;
-    [SerializeField]
-    private InputAction jumpAndDiveControls;
-    [SerializeField]
-    private InputAction dashControls;
-    [SerializeField]
-    private InputAction respawnControls;
+    [SerializeField] private InputAction respawnControls;
 
-    [SerializeField]
-    private GameObject lastCheckpoint;
+    [SerializeField] private GameObject lastCheckpoint;
 
     private PlayerControls controls;
 
 
     private bool canDash = true;
     private bool shouldClampHoriznontalSpeed = true;
+    private bool shouldClampVerticalSpeed = true;
 
     private float horizontalMovement;
     private float jumpAndDive;
@@ -75,6 +61,7 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        HandleGravity();
         if (jumpAndDive < 0)
         {
             if (!IsOnGround())
@@ -105,36 +92,81 @@ public class PlayerScript : MonoBehaviour
         {
             if (canDash) {
                 if (dash > 0) {
-                    rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x + horizontalMovement * dashSpeed, verticallDashSpeed);
+                    rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x + horizontalMovement * dashSpeed, verticalDashSpeed);
                     canDash = false;
                     shouldClampHoriznontalSpeed = false;
                  }
             }
         }
 
-      
-       
-        rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x + horizontalMovement * moveSpeed * Time.deltaTime, rigidBody2D.velocity.y);
+
+
+        HandleAcceleration();
+
+    }
+
+    private void HandleAcceleration()
+    {
+        if (IsOnGround())
+        {
+            rigidBody2D.velocity += new Vector2(horizontalMovement * groundedAcceleration * Time.deltaTime, 0);
+        } else
+        {
+            rigidBody2D.velocity += new Vector2(horizontalMovement * aerialAcceleration * Time.deltaTime, 0);
+        }
+        HandleDrag();
+        //ClampVelocity();
+    }
+
+    private void HandleDrag()
+    {
+        if (IsOnGround())
+        {
+            // If the force of the friction Will NOT cause the velocity vector to switch directions (velocity is not too small)
+            if (rigidBody2D.velocity.magnitude > groundedFriction * Time.deltaTime)
+            {
+                rigidBody2D.velocity -= rigidBody2D.velocity.normalized * groundedFriction * Time.deltaTime;
+            } else
+            {
+                rigidBody2D.velocity = Vector2.zero;
+            }
+        }
+        else
+        {
+            rigidBody2D.velocity -= rigidBody2D.velocity.normalized * rigidBody2D.velocity.sqrMagnitude * aerialDrag * Time.deltaTime * 1f;
+        }
+    }
+
+    private void ClampVelocity()
+    {
         if (shouldClampHoriznontalSpeed)
         {
             rigidBody2D.velocity = new Vector2(Mathf.Clamp(rigidBody2D.velocity.x, -maxSpeed, maxSpeed), rigidBody2D.velocity.y);
+        }
+        if (shouldClampVerticalSpeed)
+        {
+            rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, Mathf.Clamp(rigidBody2D.velocity.x, -maxFallSpeed, maxFallSpeed));
+        }
+    }
+
+    private void HandleGravity()
+    {
+        if (!IsOnGround())
+        {
+            rigidBody2D.velocity += Vector2.down * gravity * Time.deltaTime;
         }
     }
 
     private void OnEnable()
     {
-        movementControls.Enable();
-        jumpAndDiveControls.Enable();
-        dashControls.Enable();
+
         respawnControls.Enable();
         controls.Player.Enable();
     }
 
     private void OnDisable()
     {
-        movementControls.Disable();
-        jumpAndDiveControls.Disable();
-        dashControls.Disable();
+
         respawnControls.Disable();
         controls.Player.Disable();
     }
@@ -143,15 +175,15 @@ public class PlayerScript : MonoBehaviour
     {
         if (jumpAndDive > 0)
         {
-            if (collision.collider.IsTouching(bottomEdgeCollider))
+            if (IsOnGround())
             {
                 rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, jumpVelocity);
             }
-            if (collision.collider.IsTouching(rightEdgeCollider))
+            if (IsOnWallRightSide())
             {
                 rigidBody2D.velocity = new Vector2(-jumpVelocity, jumpVelocity);
             }
-            if (collision.collider.IsTouching(leftEdgeCollider))
+            if (IsOnWallLeftSide())
             {
                 rigidBody2D.velocity = new Vector2(jumpVelocity, jumpVelocity);
             }
@@ -169,26 +201,29 @@ public class PlayerScript : MonoBehaviour
 
     public bool IsOnGround()
     {
-        Component[] colliders = Component.FindObjectsOfType<Collider2D>();
-        
-        foreach (Component collider in colliders)
-        {if (!bottomEdgeCollider.Equals(collider))
-            {
-                if (bottomEdgeCollider.IsTouching(collider.GetComponent<Collider2D>()))
-                {
-                    
-                    return true;
-                }
-            }
-        }
-      
-        return false;
+        LayerMask mask = LayerMask.GetMask("Jumpable Surface");
+        return Physics2D.BoxCast(transform.position, collisionBox.size * 0.9f, 0, Vector2.down, 0.05f, mask);
+
+    }
+
+    public bool IsOnWallRightSide()
+    {
+        LayerMask mask = LayerMask.GetMask("Jumpable Surface");
+        return Physics2D.BoxCast(transform.position, collisionBox.size * 0.9f, 0, Vector2.right, 0.05f, mask);
+    }
+
+    public bool IsOnWallLeftSide()
+    {
+        LayerMask mask = LayerMask.GetMask("Jumpable Surface");
+        return Physics2D.BoxCast(transform.position, collisionBox.size * 0.9f, 0, Vector2.left, 0.05f, mask);
     }
 
     public void returnToCheckpoint()
     {
         rigidBody2D.velocity = Vector2.zero;
         transform.position = lastCheckpoint.transform.position + new Vector3(0, 0.45f, 0);
-        Debug.Log("trying to respawn");
+        
+        
+
     }
 }
