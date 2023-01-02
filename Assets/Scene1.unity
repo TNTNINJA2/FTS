@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 253211051}
   - component: {fileID: 253211050}
   - component: {fileID: 253211052}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Tiles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1296,6 +1296,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Checkpoint Tile
       objectReference: {fileID: 0}
+    - target: {fileID: 5630663592929839557, guid: a3f2f17b47bcbeb41920c4958ac72650, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 5630663592929839577, guid: a3f2f17b47bcbeb41920c4958ac72650, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -1622,7 +1626,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1924209042572791638, guid: 33adaf10d1b22ba4f982f845f476d19a, type: 3}
       propertyPath: moveSpeed
-      value: 8
+      value: 10.08
       objectReference: {fileID: 0}
     - target: {fileID: 1924209042572791638, guid: 33adaf10d1b22ba4f982f845f476d19a, type: 3}
       propertyPath: jumpVelocity
@@ -1864,7 +1868,7 @@ GameObject:
   - component: {fileID: 2019951901}
   - component: {fileID: 2019951900}
   - component: {fileID: 2019951902}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Grid
   m_TagString: Ground
   m_Icon: {fileID: 0}

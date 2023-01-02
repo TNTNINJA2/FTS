@@ -12,11 +12,8 @@ GameObject:
   - component: {fileID: 1924209042572791638}
   - component: {fileID: 1924209042572791636}
   - component: {fileID: 1924209042572791639}
-  - component: {fileID: 1924209042572791635}
-  - component: {fileID: 1924209042572791634}
-  - component: {fileID: 1924209042572791633}
-  - component: {fileID: 1924209042572791632}
   - component: {fileID: 1924209042572791637}
+  - component: {fileID: -1744307607891042632}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -51,116 +48,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 805c6fd4a5061ac4a81366a1b479a342, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 8
+  groundedAcceleration: 5
+  aerialAcceleration: 5
+  groundedFriction: 0
+  groundedPseudoDrag: 1
+  aerialDrag: 1
   jumpVelocity: 3
   maxSpeed: 4
+  maxFallSpeed: 1
   diveSpeed: 3.5
   dashSpeed: 1.8
-  verticallDashSpeed: 1
+  verticalDashSpeed: 1
+  gravity: 10
   rigidBody2D: {fileID: 1924209042572791636}
-  bottomEdgeCollider: {fileID: 1924209042572791635}
-  rightEdgeCollider: {fileID: 1924209042572791632}
-  leftEdgeCollider: {fileID: 1924209042572791633}
-  topEdgeCollider: {fileID: 1924209042572791634}
-  movementControls:
-    m_Name: Movement Controls
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: a686e2b8-65fe-4cbf-8cae-ebdefc9cadda
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 1D Axis
-      m_Id: 57f81984-a474-44d7-bf99-6f0f6dc3fcf8
-      m_Path: 1DAxis
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Movement Controls
-      m_Flags: 4
-    - m_Name: negative
-      m_Id: c2e9e4bb-9d35-4435-b588-938180a0b38e
-      m_Path: <Keyboard>/a
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Movement Controls
-      m_Flags: 8
-    - m_Name: positive
-      m_Id: 7470a34d-ab90-4395-b4f1-6fb48fe0dc37
-      m_Path: <Keyboard>/d
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Movement Controls
-      m_Flags: 8
-    m_Flags: 0
-  jumpAndDiveControls:
-    m_Name: Jump And Dive Controls
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 24df0cb0-8709-4651-bcaf-6235f4df0e90
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 1D Axis
-      m_Id: 67a1fbb0-42b8-44f1-89db-81f754500cd8
-      m_Path: 1DAxis
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Jump And Dive Controls
-      m_Flags: 4
-    - m_Name: negative
-      m_Id: 02b32028-41f5-4728-accb-edcd12c607fc
-      m_Path: <Keyboard>/s
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Jump And Dive Controls
-      m_Flags: 8
-    - m_Name: positive
-      m_Id: ced1e24c-d300-4a21-a0cd-3f2da5ca84f6
-      m_Path: <Keyboard>/space
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Jump And Dive Controls
-      m_Flags: 8
-    m_Flags: 0
-  dashControls:
-    m_Name: Dash Controls
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 344c6abc-4a89-4f64-b208-6d2914fa1579
-    m_Processors: 
-    m_Interactions: MultiTap
-    m_SingletonActionBindings:
-    - m_Name: 1D Axis
-      m_Id: 8fb75f4f-ee58-4bbd-ad68-0335d2f6daaa
-      m_Path: 1DAxis
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Dash Controls
-      m_Flags: 4
-    - m_Name: negative
-      m_Id: 7af2f04b-05ca-4b50-921f-03a8c71dff59
-      m_Path: <Keyboard>/a
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Dash Controls
-      m_Flags: 8
-    - m_Name: positive
-      m_Id: 7531fb24-af68-49cb-92ea-7787318da6d1
-      m_Path: <Keyboard>/d
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Dash Controls
-      m_Flags: 8
-    m_Flags: 0
+  collisionBox: {fileID: 1924209042572791639}
   respawnControls:
     m_Name: Respawn Controls
     m_Type: 0
@@ -194,7 +95,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -224,72 +125,8 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.1, y: 0.1}
-  m_EdgeRadius: 0.01
---- !u!70 &1924209042572791635
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1924209042572791642}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.075}
-  m_Size: {x: 0.1, y: 0.01}
-  m_Direction: 1
---- !u!70 &1924209042572791634
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1924209042572791642}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.075}
-  m_Size: {x: 0.1, y: 0.01}
-  m_Direction: 1
---- !u!70 &1924209042572791633
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1924209042572791642}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.075, y: 0}
-  m_Size: {x: 0.01, y: 0.1}
-  m_Direction: 0
---- !u!70 &1924209042572791632
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1924209042572791642}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0.075, y: 0}
-  m_Size: {x: 0.01, y: 0.1}
-  m_Direction: 0
+  m_Size: {x: 0.12, y: 0.12}
+  m_EdgeRadius: 0.02
 --- !u!212 &1924209042572791637
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -342,3 +179,33 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-1744307607891042632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1924209042572791642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 49d895b84f9554c45ba3ee3e5494a25d, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
