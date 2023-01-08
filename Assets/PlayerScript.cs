@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,15 +10,19 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private float groundedAcceleration = 1;
     [SerializeField] private float aerialAcceleration = 1;
     [SerializeField] private float groundedFriction = 1;
-    [SerializeField] private float groundedPseudoDrag = 1;
     [SerializeField] private float aerialDrag = 1;
+
     [SerializeField] private float jumpVelocity = 1;
-    [SerializeField] private float maxSpeed = 1;
-    [SerializeField] private float maxFallSpeed = 1;
     [SerializeField] private float diveSpeed = 1;
     [SerializeField] private float dashSpeed = 1;
-    [SerializeField] private float verticalDashSpeed = 1;
+    [SerializeField] private float diveBounceSpeed = 3;
+
+
     [SerializeField] private float gravity = 1;
+
+    [SerializeField] private float coyoteTime = 1;
+    [SerializeField] private float jumpGracePeriod = 1;
+    [SerializeField] private float dashTime = 1;
 
 
     [SerializeField] private Rigidbody2D rigidBody2D;
@@ -31,21 +36,29 @@ public class PlayerScript : MonoBehaviour
 
 
     private bool canDash = true;
-    private bool shouldClampHoriznontalSpeed = true;
-    private bool shouldClampVerticalSpeed = true;
+    private bool hasDivedSinceLastOnGround = false;
 
-    private float horizontalMovement;
+    private Vector2 movement;
     private float jumpAndDive;
     private float dash;
+
+    private float timeLastOnGround;
+    private float timeLastOnLeftWall;
+    private float timeLastOnRightWall;
+    private float timeLastPressedJump;
+    private float timeLastDashed;
 
     private void Awake()
     {
         controls = new PlayerControls();
 
-        controls.Player.Move.performed += ctx => horizontalMovement = ctx.ReadValue<float>();
-        controls.Player.Move.canceled += ctx => horizontalMovement = 0;
+        controls.Player.Move.performed += ctx => movement = ctx.ReadValue<Vector2>();
+        controls.Player.Move.canceled += ctx => movement = Vector2.zero;
 
-        controls.Player.JumpAndDive.performed += ctx => jumpAndDive = ctx.ReadValue<float>();
+        controls.Player.JumpAndDive.started += ctx =>
+        {
+                jumpAndDive = ctx.ReadValue<float>();
+        };
         controls.Player.JumpAndDive.canceled += ctx => jumpAndDive = 0;
 
         controls.Player.Dash.performed += ctx => dash = ctx.ReadValue<float>();
@@ -61,14 +74,15 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        HandleGravity();
-        if (jumpAndDive < 0)
+        HandleJumpingAndDiving();
+        HandleDashing();
+        // If the player hasn't dashed recently, apply gravity and acceleration
+        if (timeLastDashed + dashTime < Time.time)
         {
-            if (!IsOnGround())
-            {
-                rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, rigidBody2D.velocity.y - diveSpeed);
-            }
+            HandleAcceleration();
+            HandleGravity();
         }
+
 
         if (respawnControls.ReadValue<float>() == 1)
         {
@@ -78,41 +92,81 @@ public class PlayerScript : MonoBehaviour
             }
         }
 
+
+    }
+
+    private void HandleJumpingAndDiving()
+    {
+        if (jumpAndDive > 0)
+        {
+            timeLastPressedJump = Time.time;
+        }
+        if (timeLastPressedJump + jumpGracePeriod > Time.time)
+        {
+            if (timeLastOnGround + coyoteTime > Time.time)
+            {
+                rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, Mathf.Clamp(rigidBody2D.velocity.y, 0, 20) + jumpVelocity);
+                timeLastPressedJump = 0;
+            }
+            else if (timeLastOnLeftWall + coyoteTime > Time.time)
+            {
+                rigidBody2D.velocity = new Vector2(jumpVelocity, jumpVelocity);
+                timeLastPressedJump = 0;
+            }
+            else if (timeLastOnRightWall + coyoteTime > Time.time)
+            {
+                rigidBody2D.velocity = new Vector2(-jumpVelocity, jumpVelocity);
+                timeLastPressedJump = 0;
+            }
+            timeLastOnGround = 0;
+            timeLastOnLeftWall = 0;
+            timeLastOnRightWall = 0;
+        } else if (jumpAndDive < 0)
+        {
+            if (!IsOnGround())
+            {
+                rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, -diveSpeed);
+                hasDivedSinceLastOnGround = true;
+            }
+        }
+        jumpAndDive = 0;
+    }
+
+    private void HandleDashing()
+    {
+
         if (!canDash)
         {
-            if (IsOnGround())
+            if (IsOnGround() || IsOnWallLeftSide() || IsOnWallRightSide())
             {
                 canDash = true;
-                shouldClampHoriznontalSpeed = true;
-                Debug.Log("Reset canDash to true");
+
             }
         }
 
         if (!IsOnGround())
         {
-            if (canDash) {
-                if (dash > 0) {
-                    rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x + horizontalMovement * dashSpeed, verticalDashSpeed);
+            if (canDash)
+            {
+                if (dash > 0)
+                {
+                    rigidBody2D.velocity = movement.normalized * dashSpeed;
+                    timeLastDashed = Time.time;
                     canDash = false;
-                    shouldClampHoriznontalSpeed = false;
-                 }
+
+                }
             }
         }
-
-
-
-        HandleAcceleration();
-
     }
 
     private void HandleAcceleration()
     {
         if (IsOnGround())
         {
-            rigidBody2D.velocity += new Vector2(horizontalMovement * groundedAcceleration * Time.deltaTime, 0);
+            rigidBody2D.velocity += new Vector2(movement.x * groundedAcceleration * Time.deltaTime, 0);
         } else
         {
-            rigidBody2D.velocity += new Vector2(horizontalMovement * aerialAcceleration * Time.deltaTime, 0);
+            rigidBody2D.velocity += new Vector2(movement.x * aerialAcceleration * Time.deltaTime, 0);
         }
         HandleDrag();
         //ClampVelocity();
@@ -126,28 +180,22 @@ public class PlayerScript : MonoBehaviour
             if (rigidBody2D.velocity.magnitude > groundedFriction * Time.deltaTime)
             {
                 rigidBody2D.velocity -= rigidBody2D.velocity.normalized * groundedFriction * Time.deltaTime;
-            } else
+            }
+            else
             {
                 rigidBody2D.velocity = Vector2.zero;
             }
         }
         else
         {
-            rigidBody2D.velocity -= rigidBody2D.velocity.normalized * rigidBody2D.velocity.sqrMagnitude * aerialDrag * Time.deltaTime * 1f;
+            if (!hasDivedSinceLastOnGround)
+            {
+                rigidBody2D.velocity -= rigidBody2D.velocity.normalized * rigidBody2D.velocity.sqrMagnitude * aerialDrag * Time.deltaTime * 1f;
+            }
         }
     }
 
-    private void ClampVelocity()
-    {
-        if (shouldClampHoriznontalSpeed)
-        {
-            rigidBody2D.velocity = new Vector2(Mathf.Clamp(rigidBody2D.velocity.x, -maxSpeed, maxSpeed), rigidBody2D.velocity.y);
-        }
-        if (shouldClampVerticalSpeed)
-        {
-            rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, Mathf.Clamp(rigidBody2D.velocity.x, -maxFallSpeed, maxFallSpeed));
-        }
-    }
+
 
     private void HandleGravity()
     {
@@ -157,38 +205,34 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    private void OnEnable()
-    {
 
-        respawnControls.Enable();
-        controls.Player.Enable();
-    }
-
-    private void OnDisable()
-    {
-
-        respawnControls.Disable();
-        controls.Player.Disable();
-    }
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if (jumpAndDive > 0)
+
+        if (IsOnGround())
         {
-            if (IsOnGround())
+            if (hasDivedSinceLastOnGround)
             {
-                rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, jumpVelocity);
+                rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, diveBounceSpeed);
+                hasDivedSinceLastOnGround = false;
             }
-            if (IsOnWallRightSide())
-            {
-                rigidBody2D.velocity = new Vector2(-jumpVelocity, jumpVelocity);
-            }
-            if (IsOnWallLeftSide())
-            {
-                rigidBody2D.velocity = new Vector2(jumpVelocity, jumpVelocity);
-            }
+            timeLastOnGround = Time.time;
+        }
+        if (IsOnWallRightSide())
+        {
+            timeLastOnRightWall = Time.time;
+            hasDivedSinceLastOnGround = false;
 
         }
+        if (IsOnWallLeftSide())
+        {
+            timeLastOnLeftWall = Time.time;
+            hasDivedSinceLastOnGround = false;
+
+        }
+
+
         if (collision.collider.gameObject.tag.Equals("Checkpoint"))
         {
             lastCheckpoint = collision.collider.gameObject; 
@@ -222,8 +266,19 @@ public class PlayerScript : MonoBehaviour
     {
         rigidBody2D.velocity = Vector2.zero;
         transform.position = lastCheckpoint.transform.position + new Vector3(0, 0.45f, 0);
-        
-        
+    }
 
+    private void OnEnable()
+    {
+
+        respawnControls.Enable();
+        controls.Player.Enable();
+    }
+
+    private void OnDisable()
+    {
+
+        respawnControls.Disable();
+        controls.Player.Disable();
     }
 }

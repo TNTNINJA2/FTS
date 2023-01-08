@@ -50,16 +50,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   groundedAcceleration: 5
   aerialAcceleration: 5
-  groundedFriction: 0
-  groundedPseudoDrag: 1
-  aerialDrag: 1
-  jumpVelocity: 3
-  maxSpeed: 4
-  maxFallSpeed: 1
-  diveSpeed: 3.5
-  dashSpeed: 1.8
-  verticalDashSpeed: 1
-  gravity: 10
+  groundedFriction: 2.5
+  aerialDrag: 0.05
+  jumpVelocity: 2
+  diveSpeed: 5
+  dashSpeed: 2.5
+  diveBounceSpeed: 3
+  gravity: 5
+  coyoteTime: 0.25
+  jumpGracePeriod: 0.25
+  dashTime: 0.1
   rigidBody2D: {fileID: 1924209042572791636}
   collisionBox: {fileID: 1924209042572791639}
   respawnControls:
