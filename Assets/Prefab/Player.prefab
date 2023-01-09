@@ -48,7 +48,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 805c6fd4a5061ac4a81366a1b479a342, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groundedAcceleration: 5
+  groundedAcceleration: 25
+  groundedAccelerationDecrease: 4.5
   aerialAcceleration: 5
   groundedFriction: 2.5
   aerialDrag: 0.05

@@ -8,6 +8,7 @@ using UnityEngine.InputSystem;
 public class PlayerScript : MonoBehaviour
 {
     [SerializeField] private float groundedAcceleration = 1;
+    [SerializeField] private float groundedAccelerationDecrease = 1;
     [SerializeField] private float aerialAcceleration = 1;
     [SerializeField] private float groundedFriction = 1;
     [SerializeField] private float aerialDrag = 1;
@@ -163,7 +164,7 @@ public class PlayerScript : MonoBehaviour
     {
         if (IsOnGround())
         {
-            rigidBody2D.velocity += new Vector2(movement.x * groundedAcceleration * Time.deltaTime, 0);
+            rigidBody2D.velocity += new Vector2((movement.x * groundedAcceleration - rigidBody2D.velocity.x * groundedAccelerationDecrease) * Time.deltaTime, 0);
         } else
         {
             rigidBody2D.velocity += new Vector2(movement.x * aerialAcceleration * Time.deltaTime, 0);
