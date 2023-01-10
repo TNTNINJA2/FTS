@@ -16,6 +16,7 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private float jumpVelocity = 1;
     [SerializeField] private float diveSpeed = 1;
     [SerializeField] private float dashSpeed = 1;
+    [SerializeField] private float afterDashVelocity = 1;
     [SerializeField] private float diveBounceSpeed = 3;
 
 
@@ -32,22 +33,24 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private InputAction respawnControls;
 
     [SerializeField] private GameObject lastCheckpoint;
+    [SerializeField] private AudioSource dashSound;
 
     private PlayerControls controls;
 
 
     private bool canDash = true;
     private bool hasDivedSinceLastOnGround = false;
+    private bool shouldSlowVelocityAfterDash = false;
 
     private Vector2 movement;
     private float jumpAndDive;
     private float dash;
 
-    private float timeLastOnGround;
-    private float timeLastOnLeftWall;
-    private float timeLastOnRightWall;
-    private float timeLastPressedJump;
-    private float timeLastDashed;
+    private float timeLastOnGround = -99;
+    private float timeLastOnLeftWall = -99;
+    private float timeLastOnRightWall = -99;
+    private float timeLastPressedJump = -99;
+    private float timeLastDashed = -99;
 
     private void Awake()
     {
@@ -126,7 +129,7 @@ public class PlayerScript : MonoBehaviour
         {
             if (!IsOnGround())
             {
-                rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, -diveSpeed);
+                rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x / 10, -diveSpeed);
                 hasDivedSinceLastOnGround = true;
             }
         }
@@ -145,7 +148,7 @@ public class PlayerScript : MonoBehaviour
             }
         }
 
-        if (!IsOnGround())
+        if (!(IsOnGround() || IsOnWallLeftSide() || IsOnWallRightSide()))
         {
             if (canDash)
             {
@@ -153,10 +156,18 @@ public class PlayerScript : MonoBehaviour
                 {
                     rigidBody2D.velocity = movement.normalized * dashSpeed;
                     timeLastDashed = Time.time;
+                    dashSound.Play();
                     canDash = false;
+                    shouldSlowVelocityAfterDash = true;
 
                 }
             }
+        }
+
+        if (timeLastDashed + dashTime < Time.time && shouldSlowVelocityAfterDash)
+        {
+            rigidBody2D.velocity = rigidBody2D.velocity.normalized * afterDashVelocity;
+            shouldSlowVelocityAfterDash = false;
         }
     }
 
@@ -247,20 +258,26 @@ public class PlayerScript : MonoBehaviour
     public bool IsOnGround()
     {
         LayerMask mask = LayerMask.GetMask("Jumpable Surface");
-        return Physics2D.BoxCast(transform.position, collisionBox.size * 0.9f, 0, Vector2.down, 0.05f, mask);
+        return Physics2D.BoxCast(transform.position, new Vector2(0.14f, 0.14f) * 0.9f, 0, Vector2.down, 0.05f, mask);
 
     }
 
     public bool IsOnWallRightSide()
     {
         LayerMask mask = LayerMask.GetMask("Jumpable Surface");
-        return Physics2D.BoxCast(transform.position, collisionBox.size * 0.9f, 0, Vector2.right, 0.05f, mask);
+        return Physics2D.BoxCast(transform.position, new Vector2(0.14f, 0.14f) * 0.9f, 0, Vector2.right, 0.05f, mask);
     }
 
     public bool IsOnWallLeftSide()
     {
         LayerMask mask = LayerMask.GetMask("Jumpable Surface");
-        return Physics2D.BoxCast(transform.position, collisionBox.size * 0.9f, 0, Vector2.left, 0.05f, mask);
+        return Physics2D.BoxCast(transform.position, new Vector2(0.14f, 0.14f) * 0.9f, 0, Vector2.left, 0.05f, mask);
+    }
+
+    public bool IsOnCieling()
+    {
+        LayerMask mask = LayerMask.GetMask("Jumpable Surface");
+        return Physics2D.BoxCast(transform.position, new Vector2(0.14f, 0.14f) * 0.9f, 0, Vector2.up, 0.05f, mask);
     }
 
     public void returnToCheckpoint()
