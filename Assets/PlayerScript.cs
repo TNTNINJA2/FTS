@@ -245,15 +245,20 @@ public class PlayerScript : MonoBehaviour
         }
 
 
-        if (collision.collider.gameObject.tag.Equals("Checkpoint"))
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag.Equals("Checkpoint"))
         {
-            lastCheckpoint = collision.collider.gameObject; 
+            lastCheckpoint = collision.gameObject;
         }
-        if (collision.collider.gameObject.tag.Equals("Hazard"))
+        if (collision.gameObject.tag.Equals("Hazard"))
         {
             returnToCheckpoint();
         }
     }
+
 
     public bool IsOnGround()
     {
