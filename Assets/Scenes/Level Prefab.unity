@@ -295,7 +295,7 @@ Tilemap:
       e33: 6.29e-43
   - m_RefCount: 0
     m_Data:
-      e00: -7.073361e-34
+      e00: -7.073339e-34
       e01: 0
       e02: -1.4495531e+10
       e03: -1.4495531e+10
@@ -305,8 +305,8 @@ Tilemap:
       e13: 6.25e-43
       e20: -0.87304306
       e21: 1e-45
-      e22: 4.813951e-29
-      e23: 3.704429e+19
+      e22: 4.8391807e-29
+      e23: 3.691488e+19
       e30: 4.5905e-41
       e31: 0
       e32: 6.26e-43
@@ -323,20 +323,20 @@ Tilemap:
       e13: 6.25e-43
       e20: -0.87304306
       e21: 1e-45
-      e22: 4.9840684e-29
-      e23: 3.704429e+19
+      e22: 5.29897e-29
+      e23: 3.691488e+19
       e30: 4.5905e-41
       e31: 0
       e32: 6.26e-43
       e33: 6.29e-43
   m_TileColorArray:
   - m_RefCount: 0
-    m_Data: {r: 4.9242e-41, g: 4.9242e-41, b: 4.9242e-41, a: 4.9242e-41}
+    m_Data: {r: 4.9637e-41, g: 4.9637e-41, b: 4.9637e-41, a: 4.9637e-41}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Origin: {x: -19, y: -1, z: 0}
-  m_Size: {x: 19, y: 12, z: 1}
+  m_Origin: {x: -19, y: -8, z: 0}
+  m_Size: {x: 40, y: 19, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
   m_TileOrientation: 0
   m_TileOrientationMatrix:
@@ -469,6 +469,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf6e7ca60871d3442b00b10302e7238c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tileMap: {fileID: 253211051}
+  camera: {fileID: 616970293}
+  buffer: 0.5
 --- !u!1 &1147884519
 GameObject:
   m_ObjectHideFlags: 0
