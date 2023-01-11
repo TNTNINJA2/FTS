@@ -7,6 +7,7 @@ TagManager:
   - Checkpoint
   - Ground
   - Hazard
+  - Ice
   layers:
   - Default
   - TransparentFX
