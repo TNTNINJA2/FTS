@@ -34,6 +34,7 @@ public class PlayerScript : MonoBehaviour
 
     [SerializeField] private GameObject lastCheckpoint;
     [SerializeField] private AudioSource dashSound;
+    [SerializeField] private LogicScript logicScript;
 
     private PlayerControls controls;
 
@@ -42,6 +43,7 @@ public class PlayerScript : MonoBehaviour
     private bool hasDivedSinceLastOnGround = false;
     private bool shouldSlowVelocityAfterDash = false;
     private bool isOnIce = false;
+    private bool levelIsComplete = false;
 
     private Vector2 movement;
     private float jumpAndDive;
@@ -79,21 +81,24 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        HandleJumpingAndDiving();
-        HandleDashing();
-        // If the player hasn't dashed recently, apply gravity and acceleration
-        if (timeLastDashed + dashTime < Time.time)
+        if (!levelIsComplete)
         {
-            HandleAcceleration();
-            HandleGravity();
-        }
-
-
-        if (respawnControls.ReadValue<float>() == 1)
-        {
-            if (lastCheckpoint != null)
+            HandleJumpingAndDiving();
+            HandleDashing();
+            // If the player hasn't dashed recently, apply gravity and acceleration
+            if (timeLastDashed + dashTime < Time.time)
             {
-                returnToCheckpoint();
+                HandleAcceleration();
+                HandleGravity();
+            }
+
+
+            if (respawnControls.ReadValue<float>() == 1)
+            {
+                if (lastCheckpoint != null)
+                {
+                    returnToCheckpoint();
+                }
             }
         }
 
@@ -223,37 +228,38 @@ public class PlayerScript : MonoBehaviour
 
     private void HandleGravity()
     {
-        if (!IsOnGround())
-        {
-            rigidBody2D.velocity += Vector2.down * gravity * Time.deltaTime;
-        }
+
+        rigidBody2D.velocity += Vector2.down * gravity * Time.deltaTime;
+
     }
 
 
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-
-        if (IsOnGround())
+        if (!levelIsComplete)
         {
-            if (hasDivedSinceLastOnGround)
-
+            if (IsOnGround())
             {
-                rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, diveBounceSpeed);
-                hasDivedSinceLastOnGround = false;
+                if (hasDivedSinceLastOnGround)
+
+                {
+                    rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, diveBounceSpeed);
+                    hasDivedSinceLastOnGround = false;
+                }
+
+                timeLastOnGround = Time.time;
             }
+            if (IsOnWallRightSide())
+            {
+                timeLastOnRightWall = Time.time;
 
-            timeLastOnGround = Time.time;
-        }
-        if (IsOnWallRightSide())
-        {
-            timeLastOnRightWall = Time.time;
+            }
+            if (IsOnWallLeftSide())
+            {
+                timeLastOnLeftWall = Time.time;
 
-        }
-        if (IsOnWallLeftSide())
-        {
-            timeLastOnLeftWall = Time.time;
-
+            }
         }
 
 
@@ -268,6 +274,12 @@ public class PlayerScript : MonoBehaviour
         if (collision.gameObject.tag.Equals("Hazard"))
         {
             returnToCheckpoint();
+        }
+        if (collision.gameObject.tag.Equals("Star"))
+        {
+            logicScript.CompleteLevel();
+            levelIsComplete = true;
+            rigidBody2D.velocity = Vector2.zero;
         }
     }
     private void OnTriggerStay2D(Collider2D collision)

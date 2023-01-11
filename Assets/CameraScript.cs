@@ -14,16 +14,14 @@ public class CameraScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        var (center, size) = CalculateOrthoSize();
-        cam.transform.position = center;
-        cam.orthographicSize = size;
+        transform.position = player.transform.position;
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
+        Debug.Log("fixedupdate");
         Vector3 smoothTarget = Vector3.Lerp(transform.position, player.transform.position, smoothSpeed * Time.deltaTime);
-        cam.transform.position = smoothTarget;
+        transform.position = smoothTarget;
     }
 
     private (Vector3 center, float size) CalculateOrthoSize()

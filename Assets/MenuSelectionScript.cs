@@ -41,6 +41,6 @@ public class MenuSelectionScript : MonoBehaviour
 
     public void LoadSelectedScene()
     {
-        SceneManager.LoadScene("Level " + currentlySelectedLevel, LoadSceneMode.Single);
+        SceneManager.LoadScene(currentlySelectedLevel);
     }
 }
