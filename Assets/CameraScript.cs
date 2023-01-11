@@ -6,20 +6,24 @@ using UnityEngine.Tilemaps;
 public class CameraScript : MonoBehaviour
 {
     [SerializeField] private Tilemap tileMap;
-    [SerializeField] private Camera camera;
+    [SerializeField] private Camera cam;
+    [SerializeField] private GameObject player;
     [SerializeField] private float buffer;
+    [SerializeField] private float smoothSpeed;
+
     // Start is called before the first frame update
     void Start()
     {
         var (center, size) = CalculateOrthoSize();
-        camera.transform.position = center;
-        camera.orthographicSize = size;
+        cam.transform.position = center;
+        cam.orthographicSize = size;
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        
+        Vector3 smoothTarget = Vector3.Lerp(transform.position, player.transform.position, smoothSpeed * Time.deltaTime);
+        cam.transform.position = smoothTarget;
     }
 
     private (Vector3 center, float size) CalculateOrthoSize()
@@ -29,7 +33,7 @@ public class CameraScript : MonoBehaviour
         bounds.Expand(buffer);
 
         var vertical = bounds.size.y;
-        var horizontal = bounds.size.x * camera.pixelHeight / camera.pixelWidth;
+        var horizontal = bounds.size.x * cam.pixelHeight / cam.pixelWidth;
 
         var size = Mathf.Max(horizontal, vertical) * 0.5f;
         var center = bounds.center + new Vector3(0, 0, -10);

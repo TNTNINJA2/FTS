@@ -41,6 +41,7 @@ public class PlayerScript : MonoBehaviour
     private bool canDash = true;
     private bool hasDivedSinceLastOnGround = false;
     private bool shouldSlowVelocityAfterDash = false;
+    private bool isOnIce = false;
 
     private Vector2 movement;
     private float jumpAndDive;
@@ -115,11 +116,13 @@ public class PlayerScript : MonoBehaviour
             else if (timeLastOnLeftWall + coyoteTime > Time.time)
             {
                 rigidBody2D.velocity = new Vector2(jumpVelocity, jumpVelocity);
+                hasDivedSinceLastOnGround = false;
                 timeLastPressedJump = 0;
             }
             else if (timeLastOnRightWall + coyoteTime > Time.time)
             {
                 rigidBody2D.velocity = new Vector2(-jumpVelocity, jumpVelocity);
+                hasDivedSinceLastOnGround = false;
                 timeLastPressedJump = 0;
             }
             timeLastOnGround = 0;
@@ -175,18 +178,25 @@ public class PlayerScript : MonoBehaviour
     {
         if (IsOnGround())
         {
-            rigidBody2D.velocity += new Vector2((movement.x * groundedAcceleration - rigidBody2D.velocity.x * groundedAccelerationDecrease) * Time.deltaTime, 0);
-        } else
+            if (!isOnIce)
+            {
+                rigidBody2D.velocity += new Vector2((movement.x * groundedAcceleration - rigidBody2D.velocity.x * groundedAccelerationDecrease) * Time.deltaTime, 0);
+            } else
+            {
+                rigidBody2D.velocity += new Vector2((movement.x * groundedAcceleration) * Time.deltaTime, 0);
+            }
+            HandleFriction();
+        }
+        else
         {
             rigidBody2D.velocity += new Vector2(movement.x * aerialAcceleration * Time.deltaTime, 0);
+            HandleDrag();
         }
-        HandleDrag();
         //ClampVelocity();
     }
 
-    private void HandleDrag()
-    {
-        if (IsOnGround())
+    private void HandleFriction()
+    {   if (!isOnIce)
         {
             // If the force of the friction Will NOT cause the velocity vector to switch directions (velocity is not too small)
             if (rigidBody2D.velocity.magnitude > groundedFriction * Time.deltaTime)
@@ -198,13 +208,15 @@ public class PlayerScript : MonoBehaviour
                 rigidBody2D.velocity = Vector2.zero;
             }
         }
-        else
+    }
+
+    private void HandleDrag()
+    { 
+        if (!hasDivedSinceLastOnGround)
         {
-            if (!hasDivedSinceLastOnGround)
-            {
-                rigidBody2D.velocity -= rigidBody2D.velocity.normalized * rigidBody2D.velocity.sqrMagnitude * aerialDrag * Time.deltaTime * 1f;
-            }
+            rigidBody2D.velocity -= rigidBody2D.velocity.normalized * rigidBody2D.velocity.sqrMagnitude * aerialDrag * Time.deltaTime * 1f;
         }
+    
     }
 
 
@@ -225,22 +237,22 @@ public class PlayerScript : MonoBehaviour
         if (IsOnGround())
         {
             if (hasDivedSinceLastOnGround)
+
             {
                 rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, diveBounceSpeed);
                 hasDivedSinceLastOnGround = false;
             }
+
             timeLastOnGround = Time.time;
         }
         if (IsOnWallRightSide())
         {
             timeLastOnRightWall = Time.time;
-            hasDivedSinceLastOnGround = false;
 
         }
         if (IsOnWallLeftSide())
         {
             timeLastOnLeftWall = Time.time;
-            hasDivedSinceLastOnGround = false;
 
         }
 
@@ -257,6 +269,19 @@ public class PlayerScript : MonoBehaviour
         {
             returnToCheckpoint();
         }
+    }
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        isOnIce = collision.tag.Equals("Ice");
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.tag.Equals("Ice"))
+        {
+            isOnIce = false;
+        }
+
     }
 
 

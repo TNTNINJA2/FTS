@@ -182,6 +182,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4004014350653431106, guid: 5587b807090835c439725c90f3e02090, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4004014350653431106, guid: 5587b807090835c439725c90f3e02090, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4004014350653431106, guid: 5587b807090835c439725c90f3e02090, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4004014350653431107, guid: 5587b807090835c439725c90f3e02090, type: 3}
       propertyPath: m_Name
       value: HazardCube
