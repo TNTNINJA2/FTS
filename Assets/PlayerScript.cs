@@ -62,20 +62,18 @@ public class PlayerScript : MonoBehaviour
         controls.Player.Move.performed += ctx => movement = ctx.ReadValue<Vector2>();
         controls.Player.Move.canceled += ctx => movement = Vector2.zero;
 
-        controls.Player.JumpAndDive.started += ctx =>
-        {
-                jumpAndDive = ctx.ReadValue<float>();
-        };
+        controls.Player.JumpAndDive.started += ctx => jumpAndDive = ctx.ReadValue<float>();
         controls.Player.JumpAndDive.canceled += ctx => jumpAndDive = 0;
 
-        controls.Player.Dash.performed += ctx => dash = ctx.ReadValue<float>();
+        controls.Player.Dash.started += ctx => dash = ctx.ReadValue<float>();
+        
         controls.Player.Dash.canceled += ctx => dash = 0;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        logicScript = GameObject.Find("Logic Manager").GetComponent<LogicScript>();
     }
 
     // Update is called once per frame
@@ -156,20 +154,15 @@ public class PlayerScript : MonoBehaviour
             }
         }
 
-        if (!(IsOnGround() || IsOnWallLeftSide() || IsOnWallRightSide()))
+        if (dash > 0 && canDash && !(IsOnGround() || IsOnWallLeftSide() || IsOnWallRightSide()))
         {
-            if (canDash)
-            {
-                if (dash > 0)
-                {
-                    rigidBody2D.velocity = movement.normalized * dashSpeed;
-                    timeLastDashed = Time.time;
-                    dashSound.Play();
-                    canDash = false;
-                    shouldSlowVelocityAfterDash = true;
-
-                }
-            }
+            rigidBody2D.velocity = movement.normalized * dashSpeed;
+            dash = 0;
+            timeLastDashed = Time.time;
+            dashSound.Play();
+            canDash = false;
+            shouldSlowVelocityAfterDash = true;
+            hasDivedSinceLastOnGround = false;
         }
 
         if (timeLastDashed + dashTime < Time.time && shouldSlowVelocityAfterDash)
@@ -231,6 +224,14 @@ public class PlayerScript : MonoBehaviour
 
         rigidBody2D.velocity += Vector2.down * gravity * Time.deltaTime;
 
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if( IsOnWallLeftSide() || IsOnWallRightSide() || IsOnCieling() || IsOnGround())
+        {
+            timeLastDashed = 0;
+        }
     }
 
 

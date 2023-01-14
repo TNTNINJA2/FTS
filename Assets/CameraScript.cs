@@ -14,12 +14,12 @@ public class CameraScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        player = GameObject.Find("Player");
         transform.position = player.transform.position;
     }
 
     void FixedUpdate()
     {
-        Debug.Log("fixedupdate");
         Vector3 smoothTarget = Vector3.Lerp(transform.position, player.transform.position, smoothSpeed * Time.deltaTime);
         transform.position = smoothTarget;
     }

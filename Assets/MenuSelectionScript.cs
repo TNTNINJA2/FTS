@@ -29,13 +29,13 @@ public class MenuSelectionScript : MonoBehaviour
     public void NextLevel()
     {
         currentlySelectedLevel++;
-        Mathf.Clamp(currentlySelectedLevel, 1, 10);
+        currentlySelectedLevel = Mathf.Clamp(currentlySelectedLevel, 1, 10);
         UpdateText();
     }
     public void PreviousLevel()
     {
         currentlySelectedLevel--;
-        Mathf.Clamp(currentlySelectedLevel, 1, 10);
+        currentlySelectedLevel = Mathf.Clamp(currentlySelectedLevel, 1, 10);
         UpdateText();
     }
 
