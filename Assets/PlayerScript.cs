@@ -43,6 +43,7 @@ public class PlayerScript : MonoBehaviour
     private bool hasDivedSinceLastOnGround = false;
     private bool shouldSlowVelocityAfterDash = false;
     private bool isOnIce = false;
+    private bool isOnNoJumpSurface = false;
     private bool levelIsComplete = false;
 
     private Vector2 movement;
@@ -115,6 +116,7 @@ public class PlayerScript : MonoBehaviour
             {
                 rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, Mathf.Clamp(rigidBody2D.velocity.y, 0, 20) + jumpVelocity);
                 timeLastPressedJump = 0;
+
             }
             else if (timeLastOnLeftWall + coyoteTime > Time.time)
             {
@@ -286,6 +288,7 @@ public class PlayerScript : MonoBehaviour
     private void OnTriggerStay2D(Collider2D collision)
     {
         isOnIce = collision.tag.Equals("Ice");
+        isOnNoJumpSurface = collision.tag.Equals("No-Jump Surface");
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -294,33 +297,57 @@ public class PlayerScript : MonoBehaviour
         {
             isOnIce = false;
         }
+        if (other.tag.Equals("No-Jump Surface"))
+        {
+            isOnNoJumpSurface = false;
+        }
 
     }
 
 
     public bool IsOnGround()
     {
-        LayerMask mask = LayerMask.GetMask("Jumpable Surface");
-        return Physics2D.BoxCast(transform.position, new Vector2(0.14f, 0.14f) * 0.9f, 0, Vector2.down, 0.05f, mask);
-
+        if (!isOnNoJumpSurface)
+        {
+            LayerMask mask = LayerMask.GetMask("Jumpable Surface");
+            RaycastHit2D hit = Physics2D.BoxCast(transform.position, new Vector2(0.14f, 0.14f) * 0.9f, 0, Vector2.down, 0.04f, mask);
+            if (hit.collider != null) {
+                Debug.Log(hit.collider.tag);
+            }
+            return hit;
+        }
+        return false;
     }
 
     public bool IsOnWallRightSide()
     {
-        LayerMask mask = LayerMask.GetMask("Jumpable Surface");
-        return Physics2D.BoxCast(transform.position, new Vector2(0.14f, 0.14f) * 0.9f, 0, Vector2.right, 0.05f, mask);
+        if (!isOnNoJumpSurface)
+        {
+            LayerMask mask = LayerMask.GetMask("Jumpable Surface");
+            return Physics2D.BoxCast(transform.position, new Vector2(0.14f, 0.14f) * 0.9f, 0, Vector2.right, 0.04f, mask);
+
+        }
+        return false;
     }
 
     public bool IsOnWallLeftSide()
     {
-        LayerMask mask = LayerMask.GetMask("Jumpable Surface");
-        return Physics2D.BoxCast(transform.position, new Vector2(0.14f, 0.14f) * 0.9f, 0, Vector2.left, 0.05f, mask);
+        if (!isOnNoJumpSurface)
+        {
+            LayerMask mask = LayerMask.GetMask("Jumpable Surface");
+            return Physics2D.BoxCast(transform.position, new Vector2(0.14f, 0.14f) * 0.9f, 0, Vector2.left, 0.04f, mask);
+        }
+        return false;
     }
 
     public bool IsOnCieling()
     {
-        LayerMask mask = LayerMask.GetMask("Jumpable Surface");
-        return Physics2D.BoxCast(transform.position, new Vector2(0.14f, 0.14f) * 0.9f, 0, Vector2.up, 0.05f, mask);
+        if (!isOnNoJumpSurface)
+        {
+            LayerMask mask = LayerMask.GetMask("Jumpable Surface");
+            return Physics2D.BoxCast(transform.position, new Vector2(0.14f, 0.14f) * 0.9f, 0, Vector2.up, 0.04f, mask);
+        }
+        return false;
     }
 
     public void returnToCheckpoint()

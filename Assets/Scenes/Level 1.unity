@@ -5293,7 +5293,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: You won't be able to get over this with just a jump and dash. You need
-    more height. If you jump right as you bounce up from a dash, you go higher. Combine
+    more height. If you jump right as you bounce up from a dive, you go higher. Combine
     this bounce jump with a dash and will be able to get over this.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5870,7 +5870,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: While you can climb up this wall very slowly just by jumping, there is
     a much faster way. Try jumping off the wall and then dashing by pressing R2 or
-    shift while moving back to the wall. Learning to use the dash is very important.
+    shift. When you dash, you will  move in the direction of your joystick or wasd.
+    You can only dash while you are in the air.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -8694,8 +8695,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: You won't be able to get over this just by jumping. You will want to use
-    your dash again. Try jumping and then dashing and moving up at the same time
-    to get more height.
+    your dash again. Try jumping and then dashing upward at the same time to get
+    more height.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

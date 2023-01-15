@@ -9,6 +9,7 @@ TagManager:
   - Hazard
   - Ice
   - Star
+  - No-Jump Surface
   layers:
   - Default
   - TransparentFX
