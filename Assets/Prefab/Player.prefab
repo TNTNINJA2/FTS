@@ -59,6 +59,9 @@ MonoBehaviour:
   dashSpeed: 5
   afterDashVelocity: 3
   diveBounceSpeed: 3
+  boxCastDistance: 0.1
+  jumpBuffer: 0.3
+  boxCastSize: {x: 0.15, y: 0.15}
   gravity: 6
   coyoteTime: 0.25
   jumpGracePeriod: 0.25

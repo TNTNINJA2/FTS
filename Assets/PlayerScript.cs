@@ -18,6 +18,10 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private float dashSpeed = 1;
     [SerializeField] private float afterDashVelocity = 1;
     [SerializeField] private float diveBounceSpeed = 3;
+    [SerializeField] private float boxCastDistance = 0.2f;
+    [SerializeField] private float jumpBuffer = 0.2f;
+
+    [SerializeField] private Vector2 boxCastSize = new Vector2(0.15f, 0.15f);
 
 
     [SerializeField] private float gravity = 1;
@@ -55,6 +59,7 @@ public class PlayerScript : MonoBehaviour
     private float timeLastOnRightWall = -99;
     private float timeLastPressedJump = -99;
     private float timeLastDashed = -99;
+    private float timeLastJumped = -99;
 
     private void Awake()
     {
@@ -67,7 +72,7 @@ public class PlayerScript : MonoBehaviour
         controls.Player.JumpAndDive.canceled += ctx => jumpAndDive = 0;
 
         controls.Player.Dash.started += ctx => dash = ctx.ReadValue<float>();
-        
+
         controls.Player.Dash.canceled += ctx => dash = 0;
     }
 
@@ -110,29 +115,30 @@ public class PlayerScript : MonoBehaviour
         {
             timeLastPressedJump = Time.time;
         }
-        if (timeLastPressedJump + jumpGracePeriod > Time.time)
+        if (timeLastPressedJump + jumpGracePeriod > Time.time && timeLastJumped + jumpBuffer < Time.time)
         {
             if (timeLastOnGround + coyoteTime > Time.time)
             {
                 rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, Mathf.Clamp(rigidBody2D.velocity.y, 0, 20) + jumpVelocity);
-                timeLastPressedJump = 0;
+                timeLastPressedJump = -9;
 
             }
             else if (timeLastOnLeftWall + coyoteTime > Time.time)
             {
                 rigidBody2D.velocity = new Vector2(jumpVelocity, jumpVelocity);
                 hasDivedSinceLastOnGround = false;
-                timeLastPressedJump = 0;
+                timeLastPressedJump = -9;
             }
             else if (timeLastOnRightWall + coyoteTime > Time.time)
             {
                 rigidBody2D.velocity = new Vector2(-jumpVelocity, jumpVelocity);
                 hasDivedSinceLastOnGround = false;
-                timeLastPressedJump = 0;
+                timeLastPressedJump = -9;
             }
-            timeLastOnGround = 0;
-            timeLastOnLeftWall = 0;
-            timeLastOnRightWall = 0;
+            timeLastJumped = Time.time;
+            timeLastOnGround = -9;
+            timeLastOnLeftWall = -9;
+            timeLastOnRightWall = -9;
         } else if (jumpAndDive < 0)
         {
             if (!IsOnGround())
@@ -196,7 +202,7 @@ public class PlayerScript : MonoBehaviour
     }
 
     private void HandleFriction()
-    {   if (!isOnIce)
+    { if (!isOnIce)
         {
             // If the force of the friction Will NOT cause the velocity vector to switch directions (velocity is not too small)
             if (rigidBody2D.velocity.magnitude > groundedFriction * Time.deltaTime)
@@ -211,12 +217,12 @@ public class PlayerScript : MonoBehaviour
     }
 
     private void HandleDrag()
-    { 
+    {
         if (!hasDivedSinceLastOnGround)
         {
             rigidBody2D.velocity -= rigidBody2D.velocity.normalized * rigidBody2D.velocity.sqrMagnitude * aerialDrag * Time.deltaTime * 1f;
         }
-    
+
     }
 
 
@@ -230,10 +236,13 @@ public class PlayerScript : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if( IsOnWallLeftSide() || IsOnWallRightSide() || IsOnCieling() || IsOnGround())
+        if (IsOnWallLeftSide() || IsOnWallRightSide() || IsOnCieling() || IsOnGround())
         {
             timeLastDashed = 0;
+            timeLastJumped = 0;
         }
+        
+
     }
 
 
@@ -245,7 +254,6 @@ public class PlayerScript : MonoBehaviour
             if (IsOnGround())
             {
                 if (hasDivedSinceLastOnGround)
-
                 {
                     rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, diveBounceSpeed);
                     hasDivedSinceLastOnGround = false;
@@ -256,16 +264,12 @@ public class PlayerScript : MonoBehaviour
             if (IsOnWallRightSide())
             {
                 timeLastOnRightWall = Time.time;
-
             }
             if (IsOnWallLeftSide())
             {
                 timeLastOnLeftWall = Time.time;
-
             }
         }
-
-
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -288,7 +292,9 @@ public class PlayerScript : MonoBehaviour
     private void OnTriggerStay2D(Collider2D collision)
     {
         isOnIce = collision.tag.Equals("Ice");
-        isOnNoJumpSurface = collision.tag.Equals("No-Jump Surface");
+        if (collision.tag.Equals("No-Jump Surface")) {
+            hasDivedSinceLastOnGround = false;
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -297,57 +303,69 @@ public class PlayerScript : MonoBehaviour
         {
             isOnIce = false;
         }
-        if (other.tag.Equals("No-Jump Surface"))
-        {
-            isOnNoJumpSurface = false;
-        }
+
 
     }
 
 
     public bool IsOnGround()
     {
-        if (!isOnNoJumpSurface)
-        {
-            LayerMask mask = LayerMask.GetMask("Jumpable Surface");
-            RaycastHit2D hit = Physics2D.BoxCast(transform.position, new Vector2(0.14f, 0.14f) * 0.9f, 0, Vector2.down, 0.04f, mask);
-            if (hit.collider != null) {
-                Debug.Log(hit.collider.tag);
+
+        LayerMask mask = LayerMask.GetMask("Jumpable Surface");
+        RaycastHit2D hit = Physics2D.BoxCast(transform.position, boxCastSize * 0.9f, 0, Vector2.down, boxCastDistance, mask);
+        if (hit.collider != null) {
+            if (hit.collider.tag.Equals("No-Jump Surface"))
+            {
+                return false;
             }
-            return hit;
+            Debug.Log(hit.collider.tag);
         }
-        return false;
+        return hit;
     }
 
     public bool IsOnWallRightSide()
     {
-        if (!isOnNoJumpSurface)
+        LayerMask mask = LayerMask.GetMask("Jumpable Surface");
+        RaycastHit2D hit = Physics2D.BoxCast(transform.position, boxCastSize * 0.9f, 0, Vector2.right, boxCastDistance, mask);
+        if (hit.collider != null)
         {
-            LayerMask mask = LayerMask.GetMask("Jumpable Surface");
-            return Physics2D.BoxCast(transform.position, new Vector2(0.14f, 0.14f) * 0.9f, 0, Vector2.right, 0.04f, mask);
-
+            if (hit.collider.tag.Equals("No-Jump Surface"))
+            {
+                return false;
+            }
+            Debug.Log(hit.collider.tag);
         }
-        return false;
+        return hit;
     }
 
     public bool IsOnWallLeftSide()
     {
-        if (!isOnNoJumpSurface)
+        LayerMask mask = LayerMask.GetMask("Jumpable Surface");
+        RaycastHit2D hit = Physics2D.BoxCast(transform.position, boxCastSize * 0.9f, 0, Vector2.left, boxCastDistance, mask);
+        if (hit.collider != null)
         {
-            LayerMask mask = LayerMask.GetMask("Jumpable Surface");
-            return Physics2D.BoxCast(transform.position, new Vector2(0.14f, 0.14f) * 0.9f, 0, Vector2.left, 0.04f, mask);
+            if (hit.collider.tag.Equals("No-Jump Surface"))
+            {
+                return false;
+            }
+            Debug.Log(hit.collider.tag);
         }
-        return false;
+        return hit;
     }
 
     public bool IsOnCieling()
     {
-        if (!isOnNoJumpSurface)
+        LayerMask mask = LayerMask.GetMask("Jumpable Surface");
+        RaycastHit2D hit = Physics2D.BoxCast(transform.position, boxCastSize * 0.9f, 0, Vector2.up, boxCastDistance, mask);
+        if (hit.collider != null)
         {
-            LayerMask mask = LayerMask.GetMask("Jumpable Surface");
-            return Physics2D.BoxCast(transform.position, new Vector2(0.14f, 0.14f) * 0.9f, 0, Vector2.up, 0.04f, mask);
+            if (hit.collider.tag.Equals("No-Jump Surface"))
+            {
+                return false;
+            }
+            Debug.Log(hit.collider.tag);
         }
-        return false;
+        return hit;
     }
 
     public void returnToCheckpoint()
