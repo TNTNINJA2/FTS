@@ -47,7 +47,6 @@ public class PlayerScript : MonoBehaviour
     private bool hasDivedSinceLastOnGround = false;
     private bool shouldSlowVelocityAfterDash = false;
     private bool isOnIce = false;
-    private bool isOnNoJumpSurface = false;
     private bool levelIsComplete = false;
 
     private Vector2 movement;
@@ -121,24 +120,23 @@ public class PlayerScript : MonoBehaviour
             {
                 rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, Mathf.Clamp(rigidBody2D.velocity.y, 0, 20) + jumpVelocity);
                 timeLastPressedJump = -9;
-
+                timeLastJumped = Time.time;
             }
             else if (timeLastOnLeftWall + coyoteTime > Time.time)
             {
                 rigidBody2D.velocity = new Vector2(jumpVelocity, jumpVelocity);
                 hasDivedSinceLastOnGround = false;
                 timeLastPressedJump = -9;
+                timeLastJumped = Time.time;
             }
             else if (timeLastOnRightWall + coyoteTime > Time.time)
             {
                 rigidBody2D.velocity = new Vector2(-jumpVelocity, jumpVelocity);
                 hasDivedSinceLastOnGround = false;
                 timeLastPressedJump = -9;
+                timeLastJumped = Time.time;
             }
-            timeLastJumped = Time.time;
-            timeLastOnGround = -9;
-            timeLastOnLeftWall = -9;
-            timeLastOnRightWall = -9;
+  
         } else if (jumpAndDive < 0)
         {
             if (!IsOnGround())
