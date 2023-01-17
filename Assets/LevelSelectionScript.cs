@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 
-public class MenuSelectionScript : MonoBehaviour
+public class LevelSelectionScript : MonoBehaviour
 {
     [SerializeField] TMP_Text levelButtonText;
     private int currentlySelectedLevel = 1;
@@ -29,13 +29,13 @@ public class MenuSelectionScript : MonoBehaviour
     public void NextLevel()
     {
         currentlySelectedLevel++;
-        currentlySelectedLevel = Mathf.Clamp(currentlySelectedLevel, 1, 10);
+        currentlySelectedLevel = Mathf.Clamp(currentlySelectedLevel, 1, SceneManager.sceneCountInBuildSettings - 1);
         UpdateText();
     }
     public void PreviousLevel()
     {
         currentlySelectedLevel--;
-        currentlySelectedLevel = Mathf.Clamp(currentlySelectedLevel, 1, 10);
+        currentlySelectedLevel = Mathf.Clamp(currentlySelectedLevel, 1, SceneManager.sceneCountInBuildSettings - 1);
         UpdateText();
     }
 

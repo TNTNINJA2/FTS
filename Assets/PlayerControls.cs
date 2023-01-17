@@ -134,6 +134,17 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
+                    ""name"": """",
+                    ""id"": ""d37e9563-4b4b-4ca5-9a66-b37bf627e45d"",
+                    ""path"": ""<Touchscreen>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
                     ""name"": ""Controller"",
                     ""id"": ""31a32d83-d37b-44e4-8cdb-889fd069a866"",
                     ""path"": ""1DAxis"",
