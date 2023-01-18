@@ -59,10 +59,18 @@ public class LogicScript : MonoBehaviour
 
     public void CompleteLevel()
     {
+        timerText.text = "Time: " + GetTimerString();
         finalTimerText.text = "Your Time was: " + GetTimerString();
         levelCompletedScreen.SetActive(true);
         levelIsComplete = true;
-
+        PlayerPrefs.SetString("level" + SceneManager.GetActiveScene().buildIndex + "FastestTime", GetTimerString());
+        if (PlayerPrefs.HasKey("level" + SceneManager.GetActiveScene().buildIndex + "TimesCompleted"))
+        {
+            PlayerPrefs.SetInt("level" + SceneManager.GetActiveScene().buildIndex + "TimesCompleted", PlayerPrefs.GetInt("level" + SceneManager.GetActiveScene().buildIndex + "TimesCompleted") + 1);
+        } else
+        {
+            PlayerPrefs.SetInt("level" + SceneManager.GetActiveScene().buildIndex + "TimesCompleted", 1);
+        }
     }
 
     public void ReturnToMenu()
