@@ -8,15 +8,30 @@ public class LogicScript : MonoBehaviour
     [SerializeField] TMP_Text timerText;
     [SerializeField] TMP_Text finalTimerText;
     [SerializeField] GameObject levelCompletedScreen;
-    private float startTime;
-    private bool levelIsComplete;
+    [SerializeField] PlayerScript playerScript;
+    [SerializeField] private GameObject pauseScreen;
 
-    // Start is called before the first frame update
+    private float timeRunning = 0;
+    private bool levelIsComplete;
+    private bool isPaused;
+    private PlayerControls controls;
+
+
+    private void Awake()
+    {
+        controls = new PlayerControls();
+
+        controls.UI.Pause.performed += ctx =>
+        {
+            SetPauseLevel(true);
+            Debug.Log("pause = true");
+        };
+    }
     void Start()
     {
-        startTime = Time.time;
         Application.targetFrameRate = 60;
-        
+
+        playerScript = GameObject.Find("Player").GetComponent<PlayerScript>();
     }
 
     // Update is called once per frame
@@ -26,11 +41,15 @@ public class LogicScript : MonoBehaviour
         {
             timerText.text = "Time: " + GetTimerString();
         }
+        if (!isPaused)
+        {
+            timeRunning += Time.deltaTime;
+        }
     }
 
     private string GetTimerString()
     {
-        string minutes = ((int)Mathf.Floor((Time.time - startTime) / 60f)).ToString();
+        string minutes = ((int)Mathf.Floor((timeRunning) / 60f)).ToString();
         if (minutes.Length < 2)
         {
             minutes = "0" + minutes;
@@ -39,12 +58,12 @@ public class LogicScript : MonoBehaviour
         {
             minutes = "0" + minutes;
         }
-        string seconds = ((int)(Time.time - startTime) % 60).ToString();
+        string seconds = ((int)(timeRunning) % 60).ToString();
         if (seconds.Length < 2)
         {
             seconds = "0" + seconds;
         }
-        string milliseconds = ((int)(1000 * ((Time.time - startTime) % 1))).ToString();
+        string milliseconds = ((int)(1000 * ((timeRunning) % 1))).ToString();
         if (milliseconds.Length < 3)
         {
             milliseconds = "0" + milliseconds;
@@ -87,5 +106,22 @@ public class LogicScript : MonoBehaviour
         int levelNum = SceneManager.GetActiveScene().buildIndex;
 
         SceneManager.LoadScene(levelNum + 1);
+    }
+
+    public void SetPauseLevel(bool value)
+    {
+        isPaused = value;
+        playerScript.SetPause(value);
+        pauseScreen.SetActive(value);
+    }
+
+    private void OnEnable()
+    {
+        controls.Enable();
+    }
+
+    private void OnDisable()
+    {
+        controls.Disable();
     }
 }

@@ -39,6 +39,8 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private AudioSource dashSound;
     [SerializeField] private LogicScript logicScript;
 
+    private Vector2 pausedVelocity;
+
     private PlayerControls controls;
 
 
@@ -47,6 +49,7 @@ public class PlayerScript : MonoBehaviour
     private bool shouldSlowVelocityAfterDash = false;
     private bool isOnIce = false;
     private bool levelIsComplete = false;
+    public bool isPaused = false;
 
     private Vector2 movement;
     private float jumpAndDive;
@@ -83,7 +86,7 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!levelIsComplete)
+        if (!(levelIsComplete || isPaused))
         {
             HandleJumpingAndDiving();
             HandleDashing();
@@ -315,7 +318,6 @@ public class PlayerScript : MonoBehaviour
             {
                 return false;
             }
-            Debug.Log(hit.collider.tag);
         }
         return hit;
     }
@@ -330,7 +332,6 @@ public class PlayerScript : MonoBehaviour
             {
                 return false;
             }
-            Debug.Log(hit.collider.tag);
         }
         return hit;
     }
@@ -345,7 +346,6 @@ public class PlayerScript : MonoBehaviour
             {
                 return false;
             }
-            Debug.Log(hit.collider.tag);
         }
         return hit;
     }
@@ -360,7 +360,6 @@ public class PlayerScript : MonoBehaviour
             {
                 return false;
             }
-            Debug.Log(hit.collider.tag);
         }
         return hit;
     }
@@ -383,5 +382,18 @@ public class PlayerScript : MonoBehaviour
 
         respawnControls.Disable();
         controls.Player.Disable();
+    }
+
+    public void SetPause(bool value)
+    {
+        isPaused = value;
+        if (value)
+        {
+            pausedVelocity = rigidBody2D.velocity;
+            rigidBody2D.velocity = Vector2.zero;
+        } else
+        {
+            rigidBody2D.velocity = pausedVelocity;
+        }
     }
 }
