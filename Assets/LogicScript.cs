@@ -24,7 +24,6 @@ public class LogicScript : MonoBehaviour
         controls.UI.Pause.performed += ctx =>
         {
             SetPauseLevel(true);
-            Debug.Log("pause = true");
         };
     }
     void Start()

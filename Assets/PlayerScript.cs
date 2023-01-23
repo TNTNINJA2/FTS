@@ -288,6 +288,10 @@ public class PlayerScript : MonoBehaviour
             levelIsComplete = true;
             rigidBody2D.velocity = Vector2.zero;
         }
+        if (collision.gameObject.tag.Equals("Dodge Refresh"))
+        {
+            canDash = true;
+        }
     }
     private void OnTriggerStay2D(Collider2D collision)
     {
@@ -368,6 +372,7 @@ public class PlayerScript : MonoBehaviour
     {
         rigidBody2D.velocity = Vector2.zero;
         transform.position = lastCheckpoint.transform.position + new Vector3(0, 0.45f, 0);
+        hasDivedSinceLastOnGround = false;
     }
 
     private void OnEnable()
