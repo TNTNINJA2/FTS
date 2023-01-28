@@ -6,9 +6,13 @@ using TMPro;
 public class AudioSettingsScript : MonoBehaviour
 {
     GameObject levelSelectScreen;
+    GameObject scrollBar;
+
+    TMP_ScrollbarEventHandler scroll;
     // Start is called before the first frame update
     void Start()
     {
+
            
     }
 
