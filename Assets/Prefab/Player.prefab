@@ -64,7 +64,7 @@ MonoBehaviour:
   boxCastSize: {x: 0.15, y: 0.15}
   gravity: 6
   coyoteTime: 0.25
-  jumpGracePeriod: 0.25
+  jumpGracePeriod: 0.3
   dashTime: 0.09
   rigidBody2D: {fileID: 1924209042572791636}
   collisionBox: {fileID: 1924209042572791639}
@@ -88,6 +88,7 @@ MonoBehaviour:
   lastCheckpoint: {fileID: 0}
   dashSound: {fileID: 5079985077606472363}
   logicScript: {fileID: 0}
+  isPaused: 0
 --- !u!50 &1924209042572791636
 Rigidbody2D:
   serializedVersion: 4
