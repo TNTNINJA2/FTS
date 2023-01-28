@@ -32,13 +32,13 @@ public class StatisticsScript : MonoBehaviour
     {
         string fastestTime;
         int timesCompleted;
+            fastestTime = "NA";
+            timesCompleted = 0;
         if (PlayerPrefs.HasKey("level" + currentlySelectedLevel + "FastestTime")) {
             fastestTime = PlayerPrefs.GetString("level" + currentlySelectedLevel + "FastestTime");
             timesCompleted = PlayerPrefs.GetInt("level" + currentlySelectedLevel + "TimesCompleted");
         } else
         {
-            fastestTime = "NA";
-            timesCompleted = 0;
         }
         statsText.text = "Fastest Time: " + fastestTime + "\nTimes Completed: " + timesCompleted;
     }
