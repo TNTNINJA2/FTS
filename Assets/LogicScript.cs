@@ -9,16 +9,20 @@ public class LogicScript : MonoBehaviour
     [SerializeField] TMP_Text finalTimerText;
     [SerializeField] GameObject levelCompletedScreen;
     [SerializeField] PlayerScript playerScript;
-    [SerializeField] private GameObject pauseScreen;
+    [SerializeField] GameObject pauseScreen;
+    [SerializeField] AudioClip music = null;
 
     private float timeRunning = 0;
     private bool levelIsComplete;
     private bool isPaused;
     private PlayerControls controls;
+    private AudioManagerScript audioManagerScript;
 
 
     private void Awake()
     {
+        audioManagerScript = AudioManagerScript.instance;
+
         controls = new PlayerControls();
 
         controls.UI.Pause.performed += ctx =>
@@ -31,6 +35,14 @@ public class LogicScript : MonoBehaviour
         Application.targetFrameRate = 60;
 
         playerScript = GameObject.Find("Player").GetComponent<PlayerScript>();
+        if (music == null)
+        {
+            Debug.LogWarning("There is no music for scene " + SceneManager.GetActiveScene());
+        }
+        else
+        {
+            audioManagerScript.PlayMusic(music);
+        }
     }
 
     // Update is called once per frame

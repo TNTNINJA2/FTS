@@ -10,6 +10,7 @@ public class LevelSelectionScript : MonoBehaviour
 
     [SerializeField] TMP_Text levelButtonText;
     [SerializeField] GameObject statisticsScreen;
+    [SerializeField] GameObject audioSettingsScreen;
     private int currentlySelectedLevel = 1;
     // Start is called before the first frame update
     void Start()
@@ -50,6 +51,12 @@ public class LevelSelectionScript : MonoBehaviour
     {
         statisticsScreen.GetComponent<StatisticsScript>().UpdateStatsText();
         statisticsScreen.SetActive(true);
+        gameObject.SetActive(false);
+    }
+
+    public void OpenAudioSettings()
+    {
+        audioSettingsScreen.SetActive(true);
         gameObject.SetActive(false);
     }
 }
