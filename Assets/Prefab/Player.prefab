@@ -86,8 +86,9 @@ MonoBehaviour:
       m_Flags: 0
     m_Flags: 0
   lastCheckpoint: {fileID: 0}
-  dashSound: {fileID: 5079985077606472363}
+  dashSound: {fileID: 8300000, guid: f7cf73abe28ecae4898fb71abd48eb74, type: 3}
   logicScript: {fileID: 0}
+  audioManagerScript: {fileID: 0}
   isPaused: 0
 --- !u!50 &1924209042572791636
 Rigidbody2D:

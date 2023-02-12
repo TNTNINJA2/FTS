@@ -36,8 +36,9 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private InputAction respawnControls;
 
     [SerializeField] private GameObject lastCheckpoint;
-    [SerializeField] private AudioSource dashSound;
+    [SerializeField] private AudioClip dashSound;
     [SerializeField] private LogicScript logicScript;
+    [SerializeField] private AudioManagerScript audioManagerScript;
 
     private Vector2 pausedVelocity;
 
@@ -81,6 +82,7 @@ public class PlayerScript : MonoBehaviour
     void Start()
     {
         logicScript = GameObject.Find("Logic Manager").GetComponent<LogicScript>();
+        audioManagerScript = GameObject.Find("AudioManager").GetComponent<AudioManagerScript>();
     }
 
     // Update is called once per frame
@@ -167,7 +169,7 @@ public class PlayerScript : MonoBehaviour
             rigidBody2D.velocity = movement.normalized * dashSpeed;
             dash = 0;
             timeLastDashed = Time.time;
-            dashSound.Play();
+            audioManagerScript.PlayEffect(dashSound);
             canDash = false;
             shouldSlowVelocityAfterDash = true;
             hasDivedSinceLastOnGround = false;
