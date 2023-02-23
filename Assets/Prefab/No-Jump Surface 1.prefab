@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4574009336390692669}
   - component: {fileID: 889886811746288034}
   m_Layer: 3
-  m_Name: No-Jump Surface
+  m_Name: No-Jump Surface 1
   m_TagString: No-Jump Surface
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
