@@ -34,8 +34,8 @@ public class StatisticsScript : MonoBehaviour
         int timesCompleted;
             fastestTime = "NA";
             timesCompleted = 0;
-        if (PlayerPrefs.HasKey("level" + currentlySelectedLevel + "FastestTime")) {
-            fastestTime = PlayerPrefs.GetString("level" + currentlySelectedLevel + "FastestTime");
+        if (PlayerPrefs.HasKey("level" + currentlySelectedLevel + "FastestTimeString")) {
+            fastestTime = PlayerPrefs.GetString("level" + currentlySelectedLevel + "FastestTimeString");
             timesCompleted = PlayerPrefs.GetInt("level" + currentlySelectedLevel + "TimesCompleted");
         } else
         {
