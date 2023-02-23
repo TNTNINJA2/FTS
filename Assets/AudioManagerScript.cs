@@ -15,6 +15,9 @@ public class AudioManagerScript : MonoBehaviour
     [SerializeField] AudioSource musicSource;
     [SerializeField] AudioSource effectSource;
 
+    [SerializeField] AudioClip[] musicClips; //i=0 is the menu and each subsequent one is a level
+    
+
 
     private void Start()
     {
@@ -38,6 +41,7 @@ public class AudioManagerScript : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         DontDestroyOnLoad(musicSource.gameObject);
         DontDestroyOnLoad(effectSource.gameObject);
+        PlayMusic();
     }
 
     public void ReturnToLevelSelect()
@@ -50,7 +54,7 @@ public class AudioManagerScript : MonoBehaviour
     {
         PlayerPrefs.SetFloat("musicVolume", musicScrollBar.value);
         musicSource.volume = musicScrollBar.value;
-        PlayMusic(musicSource.clip);
+        PlayMusic();
     }
 
     public void UpdateSoundEffectVolume()
@@ -63,12 +67,10 @@ public class AudioManagerScript : MonoBehaviour
     {
         musicSource.PlayOneShot(clip);
     }
-    public void PlayMusic(AudioClip clip)
+    public void PlayMusic()
     {
         musicSource.Stop();
-        musicSource.clip = clip;
-        musicSource.Play();
-        
+        musicSource.PlayOneShot(musicClips[SceneManager.GetActiveScene().buildIndex], musicSource.volume);
     }
 
     

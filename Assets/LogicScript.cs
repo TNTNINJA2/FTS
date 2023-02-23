@@ -41,7 +41,7 @@ public class LogicScript : MonoBehaviour
         }
         else
         {
-            audioManagerScript.PlayMusic(music);
+            audioManagerScript.PlayMusic();
         }
     }
 
