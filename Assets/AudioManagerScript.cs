@@ -21,19 +21,23 @@ public class AudioManagerScript : MonoBehaviour
 
     private void Start()
     {
-        instance = this;
 
-        if(PlayerPrefs.HasKey("musicVolume") && PlayerPrefs.HasKey("soundEffectVolume"))
+        if (PlayerPrefs.HasKey("musicVolume") && PlayerPrefs.HasKey("soundEffectVolume"))
         {
             musicScrollBar.value = PlayerPrefs.GetFloat("musicVolume");
+            musicSource.volume = musicScrollBar.value;
+
             soundEffectScrollBar.value = PlayerPrefs.GetFloat("soundEffectVolume");
-        } else
+            effectSource.volume = soundEffectScrollBar.value;
+
+        }
+        else
         {
             PlayerPrefs.SetFloat("musicVolume", musicScrollBar.value);
             PlayerPrefs.SetFloat("soundEffectVolume", soundEffectScrollBar.value);
         }
 
-        
+
         soundEffectScrollBar.onValueChanged.AddListener(ctx => UpdateSoundEffectVolume());
         musicScrollBar.onValueChanged.AddListener(ctx => UpdateMusicVolume());
 
@@ -42,6 +46,11 @@ public class AudioManagerScript : MonoBehaviour
         DontDestroyOnLoad(musicSource.gameObject);
         DontDestroyOnLoad(effectSource.gameObject);
         PlayMusic();
+        if (instance != null)
+        { 
+            Destroy(instance.gameObject);
+        }
+        instance = this;
     }
 
     public void ReturnToLevelSelect()
@@ -70,8 +79,18 @@ public class AudioManagerScript : MonoBehaviour
     public void PlayMusic()
     {
         musicSource.Stop();
-        musicSource.PlayOneShot(musicClips[SceneManager.GetActiveScene().buildIndex], musicSource.volume);
+        musicSource.clip = musicClips[SceneManager.GetActiveScene().buildIndex];
+        musicSource.Play();
+        Debug.Log("Playing the clip: " + musicSource.clip.name);
     }
 
-    
+    private void OnDestroy()
+    {
+        Destroy(musicSource);
+        Destroy(effectSource);
+    }
+
+
+
+
 }

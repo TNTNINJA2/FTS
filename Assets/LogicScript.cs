@@ -35,14 +35,9 @@ public class LogicScript : MonoBehaviour
         Application.targetFrameRate = 60;
 
         playerScript = GameObject.Find("Player").GetComponent<PlayerScript>();
-        if (music == null)
-        {
-            Debug.LogWarning("There is no music for scene " + SceneManager.GetActiveScene());
-        }
-        else
-        {
-            audioManagerScript.PlayMusic();
-        }
+        audioManagerScript.PlayMusic();
+
+
     }
 
     // Update is called once per frame
@@ -93,7 +88,13 @@ public class LogicScript : MonoBehaviour
         finalTimerText.text = "Your Time was: " + GetTimerString();
         levelCompletedScreen.SetActive(true);
         levelIsComplete = true;
-        PlayerPrefs.SetString("level" + SceneManager.GetActiveScene().buildIndex + "FastestTimeString", GetTimerString());
+
+        if (!PlayerPrefs.HasKey("level" + SceneManager.GetActiveScene().buildIndex + "FastestTimeFloat") ||
+            PlayerPrefs.GetFloat("level" + SceneManager.GetActiveScene().buildIndex + "FastestTimeFloat") > timeRunning)
+        {
+            PlayerPrefs.SetFloat("level" + SceneManager.GetActiveScene().buildIndex + "FastestTimeFloat", timeRunning);
+            PlayerPrefs.SetString("level" + SceneManager.GetActiveScene().buildIndex + "FastestTimeString", GetTimerString());
+        }
         if (PlayerPrefs.HasKey("level" + SceneManager.GetActiveScene().buildIndex + "TimesCompleted"))
         {
             PlayerPrefs.SetInt("level" + SceneManager.GetActiveScene().buildIndex + "TimesCompleted", PlayerPrefs.GetInt("level" + SceneManager.GetActiveScene().buildIndex + "TimesCompleted") + 1);
