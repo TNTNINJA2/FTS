@@ -1431,7 +1431,17 @@ MonoBehaviour:
   musicScrollBar: {fileID: 266809130}
   musicSource: {fileID: 269511766}
   effectSource: {fileID: 1215568395}
-  musicClips: []
+  musicClips:
+  - {fileID: 8300000, guid: e53fc00327987f145b12db25df096e58, type: 3}
+  - {fileID: 8300000, guid: e53fc00327987f145b12db25df096e58, type: 3}
+  - {fileID: 8300000, guid: e53fc00327987f145b12db25df096e58, type: 3}
+  - {fileID: 8300000, guid: e53fc00327987f145b12db25df096e58, type: 3}
+  - {fileID: 8300000, guid: e53fc00327987f145b12db25df096e58, type: 3}
+  - {fileID: 8300000, guid: e53fc00327987f145b12db25df096e58, type: 3}
+  - {fileID: 8300000, guid: e53fc00327987f145b12db25df096e58, type: 3}
+  - {fileID: 8300000, guid: e53fc00327987f145b12db25df096e58, type: 3}
+  - {fileID: 8300000, guid: e53fc00327987f145b12db25df096e58, type: 3}
+  - {fileID: 8300000, guid: e53fc00327987f145b12db25df096e58, type: 3}
 --- !u!1 &1068671672
 GameObject:
   m_ObjectHideFlags: 0
