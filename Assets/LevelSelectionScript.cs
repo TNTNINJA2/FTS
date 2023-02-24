@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using TMPro;
 
@@ -11,6 +11,7 @@ public class LevelSelectionScript : MonoBehaviour
     [SerializeField] TMP_Text levelButtonText;
     [SerializeField] GameObject statisticsScreen;
     [SerializeField] GameObject audioSettingsScreen;
+    [SerializeField] GameObject statisticsFirstButton, audioFirstButton;
     private int currentlySelectedLevel = 1;
     // Start is called before the first frame update
     void Start()
@@ -23,6 +24,8 @@ public class LevelSelectionScript : MonoBehaviour
     {
         
     }
+
+    
 
     private void UpdateText()
     {
@@ -51,12 +54,15 @@ public class LevelSelectionScript : MonoBehaviour
     {
         statisticsScreen.GetComponent<StatisticsScript>().UpdateStatsText();
         statisticsScreen.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(statisticsFirstButton);
         gameObject.SetActive(false);
     }
 
     public void OpenAudioSettings()
     {
         audioSettingsScreen.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(audioFirstButton);
+        Debug.Log(EventSystem.current.currentSelectedGameObject.name + " is currently selected");
         gameObject.SetActive(false);
     }
 }

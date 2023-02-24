@@ -4,12 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class AudioManagerScript : MonoBehaviour
 {
     public static AudioManagerScript instance;
     [SerializeField] GameObject audioSettingScreen;
     [SerializeField] GameObject levelSelectScreen;
+    [SerializeField] GameObject levelSelectFirstButton;
     [SerializeField] Scrollbar soundEffectScrollBar;
     [SerializeField] Scrollbar musicScrollBar;
     [SerializeField] AudioSource musicSource;
@@ -56,6 +58,8 @@ public class AudioManagerScript : MonoBehaviour
     public void ReturnToLevelSelect()
     {
         levelSelectScreen.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(levelSelectFirstButton);
+
         audioSettingScreen.SetActive(false);
     }
 

@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class StatisticsScript : MonoBehaviour
 {
     [SerializeField] TMP_Text levelButtonText;
     [SerializeField] TMP_Text statsText;
-    [SerializeField] GameObject levelSelectSCreen;
+    [SerializeField] GameObject levelSelectScreen;
+    [SerializeField] GameObject levelSelectFirstButton;
     private int currentlySelectedLevel = 1;
 
 
@@ -60,7 +62,9 @@ public class StatisticsScript : MonoBehaviour
 
     public void ReturnToLevelSelect()
     {
-        levelSelectSCreen.SetActive(true);
+        levelSelectScreen.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(levelSelectFirstButton);
+
         gameObject.SetActive(false);
     }
 }
