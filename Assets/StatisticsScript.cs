@@ -11,20 +11,46 @@ public class StatisticsScript : MonoBehaviour
     [SerializeField] TMP_Text statsText;
     [SerializeField] GameObject levelSelectScreen;
     [SerializeField] GameObject levelSelectFirstButton;
+    [SerializeField] GameObject backButton;
     private int currentlySelectedLevel = 1;
 
+    PlayerControls controls;
 
-    // Start is called before the first frame update
-    void Start()
+
+    private void Awake()
     {
-   
+        controls = new PlayerControls();
+
+        controls.UI.Navigate.performed += ctx =>
+        {
+            if (EventSystem.current.currentSelectedGameObject.Equals(backButton))
+            {
+                if (ctx.ReadValue<Vector2>().x > 0)
+                {
+                    NextLevel();
+                }
+                else if (ctx.ReadValue<Vector2>().x < 0)
+                {
+                    PreviousLevel();
+                }
+            }
+        };
+        controls.UI.Cancel.performed += ctx =>
+        {
+            ReturnToLevelSelect();
+        };
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnEnable()
     {
-        
+        controls.Enable();
     }
+
+    private void OnDisable()
+    {
+        controls.Disable();
+    }
+
 
     private void UpdateLevelText()
     {

@@ -16,6 +16,8 @@ public class AudioManagerScript : MonoBehaviour
     [SerializeField] Scrollbar musicScrollBar;
     [SerializeField] AudioSource musicSource;
     [SerializeField] AudioSource effectSource;
+    [SerializeField] AudioClip dashSound;
+
 
     [SerializeField] AudioClip[] musicClips; //i=0 is the menu and each subsequent one is a level
     
@@ -23,6 +25,7 @@ public class AudioManagerScript : MonoBehaviour
 
     private void Start()
     {
+
 
         if (PlayerPrefs.HasKey("musicVolume") && PlayerPrefs.HasKey("soundEffectVolume"))
         {
@@ -74,11 +77,12 @@ public class AudioManagerScript : MonoBehaviour
     {
         effectSource.volume = soundEffectScrollBar.value;
         PlayerPrefs.SetFloat("soundEffectVolume", soundEffectScrollBar.value);
+        PlayEffect(dashSound);
     }
 
     public void PlayEffect(AudioClip clip)
     {
-        musicSource.PlayOneShot(clip);
+        effectSource.PlayOneShot(clip);
     }
     public void PlayMusic()
     {

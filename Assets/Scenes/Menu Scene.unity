@@ -918,6 +918,7 @@ MonoBehaviour:
   levelButtonText: {fileID: 1764585296}
   statisticsScreen: {fileID: 813505142}
   audioSettingsScreen: {fileID: 256663243}
+  levelSelectButton: {fileID: 1460792945}
   statisticsFirstButton: {fileID: 1176718675}
   audioFirstButton: {fileID: 2070240669}
 --- !u!1 &332481358
@@ -1384,6 +1385,7 @@ MonoBehaviour:
   statsText: {fileID: 1265385030}
   levelSelectScreen: {fileID: 300003115}
   levelSelectFirstButton: {fileID: 1959139670}
+  backButton: {fileID: 1086273284}
 --- !u!1 &1058896478
 GameObject:
   m_ObjectHideFlags: 0
@@ -1435,9 +1437,10 @@ MonoBehaviour:
   musicScrollBar: {fileID: 266809130}
   musicSource: {fileID: 269511766}
   effectSource: {fileID: 1215568395}
+  dashSound: {fileID: 8300000, guid: f7cf73abe28ecae4898fb71abd48eb74, type: 3}
   musicClips:
   - {fileID: 8300000, guid: e53fc00327987f145b12db25df096e58, type: 3}
-  - {fileID: 8300000, guid: e53fc00327987f145b12db25df096e58, type: 3}
+  - {fileID: 8300000, guid: 36ceb3a18a0098f45b863d0fd92abfd6, type: 3}
   - {fileID: 8300000, guid: be6a7d2324465ec4f9eca71b87d29fb5, type: 3}
   - {fileID: 8300000, guid: 069cbee7cac53ed41a76dbd9fc5fca09, type: 3}
   - {fileID: 8300000, guid: e53fc00327987f145b12db25df096e58, type: 3}
@@ -1577,7 +1580,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -1695,7 +1698,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 260.34, y: 167.06}
+  m_AnchoredPosition: {x: 230, y: -174}
   m_SizeDelta: {x: 120.9, y: 130.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1176718677
@@ -1932,7 +1935,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -260.34, y: 167.06}
+  m_AnchoredPosition: {x: -230, y: -174}
   m_SizeDelta: {x: 120.9, y: 130.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1201479162
@@ -2427,8 +2430,8 @@ MonoBehaviour:
     m_WrapAround: 1
     m_SelectOnUp: {fileID: 1844615668}
     m_SelectOnDown: {fileID: 1959139672}
-    m_SelectOnLeft: {fileID: 14959974}
-    m_SelectOnRight: {fileID: 1519059299}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -3850,11 +3853,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 4
-    m_WrapAround: 0
+    m_WrapAround: 1
     m_SelectOnUp: {fileID: 1959139672}
     m_SelectOnDown: {fileID: 1460792947}
-    m_SelectOnLeft: {fileID: 14959974}
-    m_SelectOnRight: {fileID: 1519059299}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -4253,7 +4256,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 2
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
