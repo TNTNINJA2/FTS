@@ -919,7 +919,7 @@ MonoBehaviour:
   statisticsScreen: {fileID: 813505142}
   audioSettingsScreen: {fileID: 256663243}
   levelSelectButton: {fileID: 1460792945}
-  statisticsFirstButton: {fileID: 1176718675}
+  statisticsFirstButton: {fileID: 1086273284}
   audioFirstButton: {fileID: 2070240669}
 --- !u!1 &332481358
 GameObject:

@@ -18,10 +18,35 @@ public class AudioManagerScript : MonoBehaviour
     [SerializeField] AudioSource effectSource;
     [SerializeField] AudioClip dashSound;
 
+    [SerializeField] PlayerControls controls;
+
 
     [SerializeField] AudioClip[] musicClips; //i=0 is the menu and each subsequent one is a level
-    
 
+
+    private void Awake()
+    {
+        controls = new PlayerControls();
+
+
+        controls.UI.Cancel.performed += ctx =>
+        {
+            if (SceneManager.GetActiveScene().buildIndex == 0 && audioSettingScreen.activeSelf)
+            {
+                ReturnToLevelSelect();
+            }
+        };
+    }
+
+    private void OnEnable()
+    {
+        controls.Enable();
+    }
+
+    private void OnDisable()
+    {
+        controls.Disable();
+    }
 
     private void Start()
     {

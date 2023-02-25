@@ -70,7 +70,10 @@ public class PlayerScript : MonoBehaviour
         controls.Player.Move.performed += ctx => movement = ctx.ReadValue<Vector2>();
         controls.Player.Move.canceled += ctx => movement = Vector2.zero;
 
-        controls.Player.JumpAndDive.started += ctx => jumpAndDive = ctx.ReadValue<float>();
+        controls.Player.JumpAndDive.started += ctx =>
+        {
+            if (!isPaused) jumpAndDive = ctx.ReadValue<float>();
+        };
         controls.Player.JumpAndDive.canceled += ctx => jumpAndDive = 0;
 
         controls.Player.Dash.started += ctx => dash = ctx.ReadValue<float>();

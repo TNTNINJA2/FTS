@@ -14,6 +14,8 @@ public class LevelSelectionScript : MonoBehaviour
     [SerializeField] GameObject levelSelectButton, statisticsFirstButton, audioFirstButton;
     private int currentlySelectedLevel = 1;
 
+    float timeLastValidNavigate = 0;
+
     [SerializeField] PlayerControls controls;
     // Start is called before the first frame update
     void Awake()
@@ -24,12 +26,17 @@ public class LevelSelectionScript : MonoBehaviour
         {
             if (EventSystem.current.currentSelectedGameObject.Equals(levelSelectButton))
             {
-                if (ctx.ReadValue<Vector2>().x > 0)
+                if (timeLastValidNavigate + 0.1 < Time.time)
                 {
-                    NextLevel();
-                } else if (ctx.ReadValue<Vector2>().x < 0)
-                {
-                    PreviousLevel();
+                    timeLastValidNavigate = Time.time;
+                    if (ctx.ReadValue<Vector2>().x > 0)
+                    {
+                        NextLevel();
+                    }
+                    else if (ctx.ReadValue<Vector2>().x < 0)
+                    {
+                        PreviousLevel();
+                    }
                 }
             }
         };
