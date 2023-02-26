@@ -64,7 +64,7 @@ MonoBehaviour:
   boxCastSize: {x: 0.15, y: 0.15}
   gravity: 6
   coyoteTime: 0.25
-  jumpGracePeriod: 0.3
+  jumpGracePeriod: 0.2
   dashTime: 0.09
   rigidBody2D: {fileID: 1924209042572791636}
   collisionBox: {fileID: 1924209042572791639}

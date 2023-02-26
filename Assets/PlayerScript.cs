@@ -18,6 +18,7 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private float afterDashVelocity = 1;
     [SerializeField] private float diveBounceSpeed = 3;
     [SerializeField] private float boxCastDistance = 0.2f;
+    [SerializeField] private float wallCastDrop = 0.2f;
     [SerializeField] private float jumpBuffer = 0.2f;
 
     [SerializeField] private Vector2 boxCastSize = new Vector2(0.15f, 0.15f);
@@ -171,7 +172,7 @@ public class PlayerScript : MonoBehaviour
             rigidBody2D.velocity = movement.normalized * dashSpeed;
             dash = 0;
             timeLastDashed = Time.time;
-            AudioManagerScript.instance.PlayEffect(dashSound);
+            if (AudioManagerScript.instance != null) AudioManagerScript.instance.PlayEffect(dashSound);
             canDash = false;
             shouldSlowVelocityAfterDash = true;
             hasDivedSinceLastOnGround = false;
@@ -244,7 +245,7 @@ public class PlayerScript : MonoBehaviour
         {
             timeLastDashed = 0;
             timeLastJumped = 0;
-            AudioManagerScript.instance.PlayEffect(landSound);
+            if (AudioManagerScript.instance != null) AudioManagerScript.instance.PlayEffect(landSound);
         }
         
 
@@ -334,7 +335,7 @@ public class PlayerScript : MonoBehaviour
     public bool IsOnWallRightSide()
     {
         LayerMask mask = LayerMask.GetMask("Jumpable Surface");
-        RaycastHit2D hit = Physics2D.BoxCast(transform.position, boxCastSize * 0.9f, 0, Vector2.right, boxCastDistance, mask);
+        RaycastHit2D hit = Physics2D.BoxCast(transform.position - new Vector3(0, - wallCastDrop, 0), boxCastSize * 0.9f, 0, Vector2.right, boxCastDistance, mask);
         if (hit.collider != null)
         {
             if (hit.collider.tag.Equals("No-Jump Surface"))
@@ -348,7 +349,7 @@ public class PlayerScript : MonoBehaviour
     public bool IsOnWallLeftSide()
     {
         LayerMask mask = LayerMask.GetMask("Jumpable Surface");
-        RaycastHit2D hit = Physics2D.BoxCast(transform.position, boxCastSize * 0.9f, 0, Vector2.left, boxCastDistance, mask);
+        RaycastHit2D hit = Physics2D.BoxCast(transform.position - new Vector3(0, -wallCastDrop, 0), boxCastSize * 0.9f, 0, Vector2.left, boxCastDistance, mask);
         if (hit.collider != null)
         {
             if (hit.collider.tag.Equals("No-Jump Surface"))

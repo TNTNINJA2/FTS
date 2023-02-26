@@ -45,7 +45,7 @@ public class LogicScript : MonoBehaviour
         Application.targetFrameRate = 60;
 
         playerScript = GameObject.Find("Player").GetComponent<PlayerScript>();
-        audioManagerScript.PlayMusic();
+        if (audioManagerScript != null) audioManagerScript.PlayMusic();
 
 
     }
