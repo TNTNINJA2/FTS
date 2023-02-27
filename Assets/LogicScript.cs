@@ -2,14 +2,15 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class LogicScript : MonoBehaviour
 {
     [SerializeField] TMP_Text timerText;
     [SerializeField] TMP_Text finalTimerText;
-    [SerializeField] GameObject levelCompletedScreen;
+    [SerializeField] GameObject levelCompletedScreen, levelCompletedScreenFirstButton;
     [SerializeField] PlayerScript playerScript;
-    [SerializeField] GameObject pauseScreen;
+    [SerializeField] GameObject pauseScreen, pauseScreenFirstButton;
     [SerializeField] AudioClip music = null;
 
     private float timeRunning = 0;
@@ -27,15 +28,24 @@ public class LogicScript : MonoBehaviour
 
         controls.UI.Pause.performed += ctx =>
         {
-            SetPauseLevel(true);
+            SetPauseLevel(!isPaused);
         };
+        
+        controls.UI.Cancel.performed += ctx =>
+        {
+            if (isPaused) SetPauseLevel(false);
+
+            if (levelIsComplete) ReturnToMenu();
+        };
+
+
     }
     void Start()
     {
         Application.targetFrameRate = 60;
 
         playerScript = GameObject.Find("Player").GetComponent<PlayerScript>();
-        audioManagerScript.PlayMusic();
+        if (audioManagerScript != null) audioManagerScript.PlayMusic();
 
 
     }
@@ -87,6 +97,7 @@ public class LogicScript : MonoBehaviour
         timerText.text = "Time: " + GetTimerString();
         finalTimerText.text = "Your Time was: " + GetTimerString();
         levelCompletedScreen.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(levelCompletedScreenFirstButton);
         levelIsComplete = true;
 
         if (!PlayerPrefs.HasKey("level" + SceneManager.GetActiveScene().buildIndex + "FastestTimeFloat") ||
@@ -125,6 +136,7 @@ public class LogicScript : MonoBehaviour
         isPaused = value;
         playerScript.SetPause(value);
         pauseScreen.SetActive(value);
+        EventSystem.current.SetSelectedGameObject(pauseScreenFirstButton);
     }
 
     private void OnEnable()

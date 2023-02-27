@@ -16,13 +16,41 @@ public class AudioManagerScript : MonoBehaviour
     [SerializeField] Scrollbar musicScrollBar;
     [SerializeField] AudioSource musicSource;
     [SerializeField] AudioSource effectSource;
+    [SerializeField] AudioClip dashSound;
+
+    [SerializeField] PlayerControls controls;
+
 
     [SerializeField] AudioClip[] musicClips; //i=0 is the menu and each subsequent one is a level
-    
 
+
+    private void Awake()
+    {
+        controls = new PlayerControls();
+
+
+        controls.UI.Cancel.performed += ctx =>
+        {
+            if (SceneManager.GetActiveScene().buildIndex == 0 && audioSettingScreen.activeSelf)
+            {
+                ReturnToLevelSelect();
+            }
+        };
+    }
+
+    private void OnEnable()
+    {
+        controls.Enable();
+    }
+
+    private void OnDisable()
+    {
+        controls.Disable();
+    }
 
     private void Start()
     {
+
 
         if (PlayerPrefs.HasKey("musicVolume") && PlayerPrefs.HasKey("soundEffectVolume"))
         {
@@ -74,11 +102,14 @@ public class AudioManagerScript : MonoBehaviour
     {
         effectSource.volume = soundEffectScrollBar.value;
         PlayerPrefs.SetFloat("soundEffectVolume", soundEffectScrollBar.value);
+        PlayEffect(dashSound, 1f);
     }
 
-    public void PlayEffect(AudioClip clip)
+    public void PlayEffect(AudioClip clip, float volumeScale)
     {
-        musicSource.PlayOneShot(clip);
+        effectSource.volume = PlayerPrefs.GetFloat("soundEffectVolume") * volumeScale;
+        effectSource.PlayOneShot(clip);
+        effectSource.volume = PlayerPrefs.GetFloat("soundEffectVolume");
     }
     public void PlayMusic()
     {

@@ -18,6 +18,7 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private float afterDashVelocity = 1;
     [SerializeField] private float diveBounceSpeed = 3;
     [SerializeField] private float boxCastDistance = 0.2f;
+    [SerializeField] private float wallCastDrop = 0.2f;
     [SerializeField] private float jumpBuffer = 0.2f;
 
     [SerializeField] private Vector2 boxCastSize = new Vector2(0.15f, 0.15f);
@@ -37,8 +38,8 @@ public class PlayerScript : MonoBehaviour
 
     [SerializeField] private GameObject lastCheckpoint;
     [SerializeField] private AudioClip dashSound;
+    [SerializeField] private AudioClip landSound;
     [SerializeField] private LogicScript logicScript;
-    [SerializeField] private AudioManagerScript audioManagerScript;
 
     private Vector2 pausedVelocity;
 
@@ -70,7 +71,10 @@ public class PlayerScript : MonoBehaviour
         controls.Player.Move.performed += ctx => movement = ctx.ReadValue<Vector2>();
         controls.Player.Move.canceled += ctx => movement = Vector2.zero;
 
-        controls.Player.JumpAndDive.started += ctx => jumpAndDive = ctx.ReadValue<float>();
+        controls.Player.JumpAndDive.started += ctx =>
+        {
+            if (!isPaused) jumpAndDive = ctx.ReadValue<float>();
+        };
         controls.Player.JumpAndDive.canceled += ctx => jumpAndDive = 0;
 
         controls.Player.Dash.started += ctx => dash = ctx.ReadValue<float>();
@@ -82,7 +86,6 @@ public class PlayerScript : MonoBehaviour
     void Start()
     {
         logicScript = GameObject.Find("Logic Manager").GetComponent<LogicScript>();
-        audioManagerScript = GameObject.Find("AudioManager").GetComponent<AudioManagerScript>();
     }
 
     // Update is called once per frame
@@ -169,7 +172,7 @@ public class PlayerScript : MonoBehaviour
             rigidBody2D.velocity = movement.normalized * dashSpeed;
             dash = 0;
             timeLastDashed = Time.time;
-            audioManagerScript.PlayEffect(dashSound);
+            if (AudioManagerScript.instance != null) AudioManagerScript.instance.PlayEffect(dashSound, 1);
             canDash = false;
             shouldSlowVelocityAfterDash = true;
             hasDivedSinceLastOnGround = false;
@@ -227,13 +230,9 @@ public class PlayerScript : MonoBehaviour
 
     }
 
-
-
     private void HandleGravity()
     {
-
         rigidBody2D.velocity += Vector2.down * gravity * Time.deltaTime;
-
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -242,9 +241,13 @@ public class PlayerScript : MonoBehaviour
         {
             timeLastDashed = 0;
             timeLastJumped = 0;
+            if (IsOnGround()) {
+                Debug.Log("Playing land sound \nVelocity is: " + -rigidBody2D.velocity.y);
+                Debug.Log("volumeScale is: " + (1 - (1 /( -rigidBody2D.velocity.y + 1))));
+                if (AudioManagerScript.instance != null) AudioManagerScript.instance.PlayEffect(landSound, 1 - (1 /( -rigidBody2D.velocity.y + 1)));
+            }
         }
         
-
     }
 
 
@@ -294,6 +297,10 @@ public class PlayerScript : MonoBehaviour
         {
             canDash = true;
         }
+        if (collision.gameObject.tag.Equals("Booster"))
+        {
+            canDash = true;
+        }
     }
     private void OnTriggerStay2D(Collider2D collision)
     {
@@ -331,7 +338,7 @@ public class PlayerScript : MonoBehaviour
     public bool IsOnWallRightSide()
     {
         LayerMask mask = LayerMask.GetMask("Jumpable Surface");
-        RaycastHit2D hit = Physics2D.BoxCast(transform.position, boxCastSize * 0.9f, 0, Vector2.right, boxCastDistance, mask);
+        RaycastHit2D hit = Physics2D.BoxCast(transform.position - new Vector3(0, - wallCastDrop, 0), boxCastSize * 0.9f, 0, Vector2.right, boxCastDistance, mask);
         if (hit.collider != null)
         {
             if (hit.collider.tag.Equals("No-Jump Surface"))
@@ -345,7 +352,7 @@ public class PlayerScript : MonoBehaviour
     public bool IsOnWallLeftSide()
     {
         LayerMask mask = LayerMask.GetMask("Jumpable Surface");
-        RaycastHit2D hit = Physics2D.BoxCast(transform.position, boxCastSize * 0.9f, 0, Vector2.left, boxCastDistance, mask);
+        RaycastHit2D hit = Physics2D.BoxCast(transform.position - new Vector3(0, -wallCastDrop, 0), boxCastSize * 0.9f, 0, Vector2.left, boxCastDistance, mask);
         if (hit.collider != null)
         {
             if (hit.collider.tag.Equals("No-Jump Surface"))

@@ -11,12 +11,49 @@ public class LevelSelectionScript : MonoBehaviour
     [SerializeField] TMP_Text levelButtonText;
     [SerializeField] GameObject statisticsScreen;
     [SerializeField] GameObject audioSettingsScreen;
-    [SerializeField] GameObject statisticsFirstButton, audioFirstButton;
+    [SerializeField] GameObject levelSelectButton, statisticsFirstButton, audioFirstButton;
     private int currentlySelectedLevel = 1;
-    // Start is called before the first frame update
-    void Start()
+
+    float timeLastValidNavigate = 0;
+
+    [SerializeField] PlayerControls controls;
+    void Awake()
     {
+
         
+        controls = new PlayerControls();
+
+        controls.UI.Navigate.performed += ctx =>
+        {
+            if (Time.timeSinceLevelLoad > 0.1)
+            {
+                if (SceneManager.GetActiveScene().buildIndex == 0 && EventSystem.current.currentSelectedGameObject.Equals(levelSelectButton))
+                {
+                    if (timeLastValidNavigate + 0.1 < Time.time)
+                    {
+                        timeLastValidNavigate = Time.time;
+                        if (ctx.ReadValue<Vector2>().x > 0)
+                        {
+                            NextLevel();
+                        }
+                        else if (ctx.ReadValue<Vector2>().x < 0)
+                        {
+                            PreviousLevel();
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+    private void OnEnable()
+    {
+        controls.Enable();
+    }
+
+    private void OnDisable()
+    {
+        controls.Disable();
     }
 
     // Update is called once per frame
