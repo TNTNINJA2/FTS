@@ -62,6 +62,7 @@ MonoBehaviour:
   boxCastDistance: 0.1
   wallCastDrop: 0.2
   jumpBuffer: 0.3
+  boosterSpeed: 5
   boxCastSize: {x: 0.15, y: 0.15}
   gravity: 6
   coyoteTime: 0.25

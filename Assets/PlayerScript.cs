@@ -20,6 +20,7 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private float boxCastDistance = 0.2f;
     [SerializeField] private float wallCastDrop = 0.2f;
     [SerializeField] private float jumpBuffer = 0.2f;
+    [SerializeField] private float boosterSpeed = 0.2f;
 
     [SerializeField] private Vector2 boxCastSize = new Vector2(0.15f, 0.15f);
 
@@ -299,7 +300,7 @@ public class PlayerScript : MonoBehaviour
         }
         if (collision.gameObject.tag.Equals("Booster"))
         {
-            canDash = true;
+            rigidBody2D.velocity = boosterSpeed * new Vector2(Mathf.Cos(collision.gameObject.transform.rotation.eulerAngles.z * Mathf.Deg2Rad), Mathf.Sin(collision.gameObject.transform.rotation.eulerAngles.z * Mathf.Deg2Rad));
         }
     }
     private void OnTriggerStay2D(Collider2D collision)
