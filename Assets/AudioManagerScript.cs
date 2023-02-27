@@ -102,12 +102,14 @@ public class AudioManagerScript : MonoBehaviour
     {
         effectSource.volume = soundEffectScrollBar.value;
         PlayerPrefs.SetFloat("soundEffectVolume", soundEffectScrollBar.value);
-        PlayEffect(dashSound);
+        PlayEffect(dashSound, 1f);
     }
 
-    public void PlayEffect(AudioClip clip)
+    public void PlayEffect(AudioClip clip, float volumeScale)
     {
+        effectSource.volume = PlayerPrefs.GetFloat("soundEffectVolume") * volumeScale;
         effectSource.PlayOneShot(clip);
+        effectSource.volume = PlayerPrefs.GetFloat("soundEffectVolume");
     }
     public void PlayMusic()
     {

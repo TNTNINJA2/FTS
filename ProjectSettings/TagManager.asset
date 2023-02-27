@@ -11,6 +11,7 @@ TagManager:
   - Star
   - No-Jump Surface
   - Dodge Refresh
+  - Booster
   layers:
   - Default
   - TransparentFX

@@ -172,7 +172,7 @@ public class PlayerScript : MonoBehaviour
             rigidBody2D.velocity = movement.normalized * dashSpeed;
             dash = 0;
             timeLastDashed = Time.time;
-            if (AudioManagerScript.instance != null) AudioManagerScript.instance.PlayEffect(dashSound);
+            if (AudioManagerScript.instance != null) AudioManagerScript.instance.PlayEffect(dashSound, 1);
             canDash = false;
             shouldSlowVelocityAfterDash = true;
             hasDivedSinceLastOnGround = false;
@@ -230,13 +230,9 @@ public class PlayerScript : MonoBehaviour
 
     }
 
-
-
     private void HandleGravity()
     {
-
         rigidBody2D.velocity += Vector2.down * gravity * Time.deltaTime;
-
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -245,10 +241,13 @@ public class PlayerScript : MonoBehaviour
         {
             timeLastDashed = 0;
             timeLastJumped = 0;
-            if (AudioManagerScript.instance != null) AudioManagerScript.instance.PlayEffect(landSound);
+            if (IsOnGround()) {
+                Debug.Log("Playing land sound \nVelocity is: " + -rigidBody2D.velocity.y);
+                Debug.Log("volumeScale is: " + (1 - (1 /( -rigidBody2D.velocity.y + 1))));
+                if (AudioManagerScript.instance != null) AudioManagerScript.instance.PlayEffect(landSound, 1 - (1 /( -rigidBody2D.velocity.y + 1)));
+            }
         }
         
-
     }
 
 
@@ -295,6 +294,10 @@ public class PlayerScript : MonoBehaviour
             rigidBody2D.velocity = Vector2.zero;
         }
         if (collision.gameObject.tag.Equals("Dodge Refresh"))
+        {
+            canDash = true;
+        }
+        if (collision.gameObject.tag.Equals("Booster"))
         {
             canDash = true;
         }

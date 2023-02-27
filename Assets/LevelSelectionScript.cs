@@ -17,25 +17,29 @@ public class LevelSelectionScript : MonoBehaviour
     float timeLastValidNavigate = 0;
 
     [SerializeField] PlayerControls controls;
-    // Start is called before the first frame update
     void Awake()
     {
+
+        
         controls = new PlayerControls();
 
         controls.UI.Navigate.performed += ctx =>
         {
-            if (EventSystem.current.currentSelectedGameObject.Equals(levelSelectButton))
+            if (Time.timeSinceLevelLoad > 0.1)
             {
-                if (timeLastValidNavigate + 0.1 < Time.time)
+                if (SceneManager.GetActiveScene().buildIndex == 0 && EventSystem.current.currentSelectedGameObject.Equals(levelSelectButton))
                 {
-                    timeLastValidNavigate = Time.time;
-                    if (ctx.ReadValue<Vector2>().x > 0)
+                    if (timeLastValidNavigate + 0.1 < Time.time)
                     {
-                        NextLevel();
-                    }
-                    else if (ctx.ReadValue<Vector2>().x < 0)
-                    {
-                        PreviousLevel();
+                        timeLastValidNavigate = Time.time;
+                        if (ctx.ReadValue<Vector2>().x > 0)
+                        {
+                            NextLevel();
+                        }
+                        else if (ctx.ReadValue<Vector2>().x < 0)
+                        {
+                            PreviousLevel();
+                        }
                     }
                 }
             }
