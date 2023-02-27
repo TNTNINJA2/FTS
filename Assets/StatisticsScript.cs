@@ -12,6 +12,7 @@ public class StatisticsScript : MonoBehaviour
     [SerializeField] GameObject levelSelectScreen;
     [SerializeField] GameObject levelSelectFirstButton;
     [SerializeField] GameObject backButton;
+    float timeLastValidNavigate;
     private int currentlySelectedLevel = 1;
 
     PlayerControls controls;
@@ -23,15 +24,22 @@ public class StatisticsScript : MonoBehaviour
 
         controls.UI.Navigate.performed += ctx =>
         {
-            if (EventSystem.current.currentSelectedGameObject.Equals(backButton))
+            if (Time.timeSinceLevelLoad > 0.1)
             {
-                if (ctx.ReadValue<Vector2>().x > 0)
+                if (EventSystem.current.currentSelectedGameObject.Equals(backButton))
                 {
-                    NextLevel();
-                }
-                else if (ctx.ReadValue<Vector2>().x < 0)
-                {
-                    PreviousLevel();
+                    if (timeLastValidNavigate + 0.1 < Time.time)
+                    {
+                        timeLastValidNavigate = Time.time;
+                        if (ctx.ReadValue<Vector2>().x > 0)
+                        {
+                            NextLevel();
+                        }
+                        else if (ctx.ReadValue<Vector2>().x < 0)
+                        {
+                            PreviousLevel();
+                        }
+                    }
                 }
             }
         };
