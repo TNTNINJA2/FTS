@@ -5372,6 +5372,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HazardCube
       objectReference: {fileID: 0}
+    - target: {fileID: 7076645059528522929, guid: 5587b807090835c439725c90f3e02090, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5587b807090835c439725c90f3e02090, type: 3}
 --- !u!1001 &776823370
