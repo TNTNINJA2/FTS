@@ -339,7 +339,7 @@ public class PlayerScript : MonoBehaviour
     public bool IsOnWallRightSide()
     {
         LayerMask mask = LayerMask.GetMask("Jumpable Surface");
-        RaycastHit2D hit = Physics2D.BoxCast(transform.position - new Vector3(0, - wallCastDrop, 0), boxCastSize * 0.9f, 0, Vector2.right, boxCastDistance, mask);
+        RaycastHit2D hit = Physics2D.BoxCast(transform.position - new Vector3(0, wallCastDrop, 0), boxCastSize * 0.9f, 0, Vector2.right, boxCastDistance, mask);
         if (hit.collider != null)
         {
             if (hit.collider.tag.Equals("No-Jump Surface"))
@@ -353,7 +353,7 @@ public class PlayerScript : MonoBehaviour
     public bool IsOnWallLeftSide()
     {
         LayerMask mask = LayerMask.GetMask("Jumpable Surface");
-        RaycastHit2D hit = Physics2D.BoxCast(transform.position - new Vector3(0, -wallCastDrop, 0), boxCastSize * 0.9f, 0, Vector2.left, boxCastDistance, mask);
+        RaycastHit2D hit = Physics2D.BoxCast(transform.position - new Vector3(0, wallCastDrop, 0), boxCastSize * 0.9f, 0, Vector2.left, boxCastDistance, mask);
         if (hit.collider != null)
         {
             if (hit.collider.tag.Equals("No-Jump Surface"))
