@@ -301,6 +301,7 @@ public class PlayerScript : MonoBehaviour
         if (collision.gameObject.tag.Equals("Booster"))
         {
             rigidBody2D.velocity = boosterSpeed * new Vector2(Mathf.Cos(collision.gameObject.transform.rotation.eulerAngles.z * Mathf.Deg2Rad), Mathf.Sin(collision.gameObject.transform.rotation.eulerAngles.z * Mathf.Deg2Rad));
+            shouldSlowVelocityAfterDash = false;
         }
     }
     private void OnTriggerStay2D(Collider2D collision)
