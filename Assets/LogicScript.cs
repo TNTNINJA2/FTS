@@ -28,7 +28,7 @@ public class LogicScript : MonoBehaviour
 
         controls.UI.Pause.performed += ctx =>
         {
-            SetPauseLevel(!isPaused);
+            if(!levelIsComplete) SetPauseLevel(!isPaused);
         };
         
         controls.UI.Cancel.performed += ctx =>
