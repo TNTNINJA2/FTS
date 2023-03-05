@@ -62,7 +62,14 @@ public class StatisticsScript : MonoBehaviour
 
     private void UpdateLevelText()
     {
-        levelButtonText.text = "Level " + currentlySelectedLevel;
+        if (currentlySelectedLevel <= 10)
+        {
+            levelButtonText.text = "Level " + currentlySelectedLevel;
+        }
+        else
+        {
+            levelButtonText.text = "Challenge " + (currentlySelectedLevel - 10);
+        }
     }
     public void UpdateStatsText()
     {
