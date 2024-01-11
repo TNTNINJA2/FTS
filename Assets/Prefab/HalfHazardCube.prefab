@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4004014350653431106}
   - component: {fileID: 7076645059528522929}
   m_Layer: 0
-  m_Name: HazardCube
+  m_Name: HalfHazardCube
   m_TagString: Hazard
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

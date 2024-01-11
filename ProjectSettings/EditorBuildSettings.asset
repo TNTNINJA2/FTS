@@ -47,4 +47,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Hell 3.unity
     guid: a4175a7cee565604fbfe5a4b6478f626
+  - enabled: 1
+    path: Assets/Scenes/Hell 4.unity
+    guid: a5d80014ee6a46544881e20473b69532
   m_configObjects: {}
