@@ -47,6 +47,8 @@ public class PlayerScript : MonoBehaviour
     private PlayerControls controls;
 
 
+    private bool controlsAreSetup = false;
+
     private bool canDash = true;
     private bool hasDivedSinceLastOnGround = false;
     private bool shouldSlowVelocityAfterDash = false;
@@ -67,20 +69,7 @@ public class PlayerScript : MonoBehaviour
 
     private void Awake()
     {
-        controls = new PlayerControls();
-
-        controls.Player.Move.performed += ctx => movement = ctx.ReadValue<Vector2>();
-        controls.Player.Move.canceled += ctx => movement = Vector2.zero;
-
-        controls.Player.JumpAndDive.started += ctx =>
-        {
-            if (!isPaused) jumpAndDive = ctx.ReadValue<float>();
-        };
-        controls.Player.JumpAndDive.canceled += ctx => jumpAndDive = 0;
-
-        controls.Player.Dash.started += ctx => dash = ctx.ReadValue<float>();
-
-        controls.Player.Dash.canceled += ctx => dash = 0;
+        
     }
 
     // Start is called before the first frame update
@@ -92,6 +81,28 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Workaround for WebGL build controls
+        if (!controlsAreSetup)
+        {
+            controls = new PlayerControls();
+
+            controls.Player.Move.performed += ctx => movement = ctx.ReadValue<Vector2>();
+            controls.Player.Move.canceled += ctx => movement = Vector2.zero;
+
+            controls.Player.JumpAndDive.started += ctx =>
+            {
+                if (!isPaused) jumpAndDive = ctx.ReadValue<float>();
+            };
+            controls.Player.JumpAndDive.canceled += ctx => jumpAndDive = 0;
+
+            controls.Player.Dash.started += ctx => dash = ctx.ReadValue<float>();
+
+            controls.Player.Dash.canceled += ctx => dash = 0;
+            controls.Player.Enable();
+
+            controlsAreSetup = true;
+        }
+
         if (!(levelIsComplete || isPaused))
         {
             HandleJumpingAndDiving();
@@ -390,7 +401,10 @@ public class PlayerScript : MonoBehaviour
     {
 
         respawnControls.Enable();
-        controls.Player.Enable();
+        if (controls != null)
+        {
+            controls.Player.Enable();
+        }
     }
 
     private void OnDisable()

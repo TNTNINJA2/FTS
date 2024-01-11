@@ -48,6 +48,21 @@ public class AudioManagerScript : MonoBehaviour
         controls.Disable();
     }
 
+    public static void TryPlayEffect(AudioClip clip)
+    {
+        if (instance != null)
+        {
+            instance.PlayEffect(clip, 1);
+        }
+    }
+    public static void TryPlayEffect(AudioClip clip, float volumeScale)
+    {
+        if (instance != null)
+        {
+            instance.PlayEffect(clip, volumeScale);
+        }
+    }
+
     private void Start()
     {
 
