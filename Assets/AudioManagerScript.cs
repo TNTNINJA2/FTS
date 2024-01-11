@@ -70,7 +70,7 @@ public class AudioManagerScript : MonoBehaviour
         if (PlayerPrefs.HasKey("musicVolume") && PlayerPrefs.HasKey("soundEffectVolume"))
         {
             musicScrollBar.value = PlayerPrefs.GetFloat("musicVolume");
-            musicSource.volume = musicScrollBar.value;
+            musicSource.volume = musicScrollBar.value / 10;
 
             soundEffectScrollBar.value = PlayerPrefs.GetFloat("soundEffectVolume");
             effectSource.volume = soundEffectScrollBar.value;
