@@ -82,7 +82,7 @@ public class PlayerScript : MonoBehaviour
     void Update()
     {
         //Workaround for WebGL build controls
-        if (!controlsAreSetup)
+        if (controls == null)
         {
             controls = new PlayerControls();
 
@@ -98,7 +98,10 @@ public class PlayerScript : MonoBehaviour
             controls.Player.Dash.started += ctx => dash = ctx.ReadValue<float>();
 
             controls.Player.Dash.canceled += ctx => dash = 0;
-            controls.Player.Enable();
+            if (controls != null)
+            {
+                controls.Player.Enable();
+            }
 
             controlsAreSetup = true;
         }
